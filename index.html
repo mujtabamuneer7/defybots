@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Workspace</title>
+    <title>DefyBot AI | Mujtaba</title>
     <style>
         :root { --primary: #4f46e5; --bg: #f8fafc; --sidebar: #1e293b; --border: #e2e8f0; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
 
-        /* Sidebar Navigation */
+        /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar); color: white; padding: 25px; display: flex; flex-direction: column; gap: 10px; }
-        .sidebar h2 { margin-bottom: 30px; letter-spacing: 1px; font-size: 22px; }
+        .sidebar h2 { margin-bottom: 30px; letter-spacing: 1px; font-size: 22px; color: #fff; }
         .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px; text-align: left; cursor: pointer; border-radius: 8px; font-weight: 600; transition: 0.2s; }
         .nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
         .nav-btn.active { background: var(--primary); color: white; }
@@ -33,7 +33,7 @@
         .btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn:hover { background: #4338ca; }
 
-        #res { margin-top: 20px; font-size: 14px; white-space: pre-wrap; display: none; background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); }
+        #res { margin-top: 20px; font-size: 14px; white-space: pre-wrap; display: none; background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); color: #334155; }
     </style>
 </head>
 <body>
@@ -47,7 +47,7 @@
     <main class="main">
         <section id="chatPage" class="page active">
             <div id="chatDisplay">
-                <div class="msg ai">Hello Mujtaba! All systems clear. How can I help?</div>
+                <div class="msg ai">Welcome, Mujtaba. DefyBot is online and ready. How can I help?</div>
             </div>
             <div class="input-bar">
                 <input type="text" id="userInput" placeholder="Ask Gemini..." onkeypress="if(event.key==='Enter') send()">
@@ -56,10 +56,10 @@
         </section>
 
         <section id="propPage" class="page">
-            <div style="max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 15px; border: 1px solid var(--border);">
+            <div style="max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 15px; border: 1px solid var(--border); width: 100%;">
                 <h3>Business Proposal Generator</h3>
-                <input type="text" id="cName" placeholder="Client Name" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;">
-                <textarea id="pGoals" rows="6" placeholder="Project Scope" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                <input type="text" id="cName" placeholder="Client Name" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px; outline:none;">
+                <textarea id="pGoals" rows="6" placeholder="Project Details & Goals" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px; outline:none; resize: none;"></textarea>
                 <button class="btn" style="width: 100%; margin-top:15px;" onclick="generate()">Generate Proposal</button>
                 <div id="res"></div>
             </div>
@@ -67,8 +67,9 @@
     </main>
 
     <script>
-        const KEY = "AIzaSyBOp41_7YKoJ7PR6VdTTTmvw3csoSESK6c";
-        let hist = [];
+        // Updated API Key
+        const API_KEY = "AIzaSyDAl7mknM1IidGe6MtIW1ibTgB7wXHFIIE";
+        let history = [];
 
         function show(id, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -77,70 +78,67 @@
             btn.classList.add('active');
         }
 
-        async function api(prompt, isChat) {
-            // LIST OF MODELS TO TRY IN ORDER
-            const models = [
-                "gemini-1.5-flash",
-                "gemini-1.5-flash-8b",
-                "gemini-1.0-pro"
-            ];
+        async function callGemini(prompt, isChat = true) {
+            // Using v1beta endpoint for maximum compatibility with 1.5-flash
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
             
-            let lastError = "";
+            const requestBody = {
+                contents: isChat ? [...history, { role: "user", parts: [{ text: prompt }] }] : [{ role: "user", parts: [{ text: prompt }] }]
+            };
 
-            for (let modelName of models) {
-                try {
-                    // We use v1beta as it is the most flexible for mixed model projects
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${KEY}`;
-                    
-                    const contents = isChat ? [...hist, {role:"user", parts:[{text:prompt}]}] : [{role:"user", parts:[{text:prompt}]}];
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
 
-                    const r = await fetch(url, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ contents })
-                    });
-                    
-                    const d = await r.json();
-                    
-                    if (r.ok && d.candidates) {
-                        const txt = d.candidates[0].content.parts[0].text;
-                        if(isChat) {
-                            hist.push({role:"user", parts:[{text:prompt}]});
-                            hist.push({role:"model", parts:[{text:txt}]});
-                        }
-                        return txt;
-                    } else {
-                        lastError = d.error ? d.error.message : "Unknown error";
-                        console.warn(`Model ${modelName} failed, trying next...`);
-                        continue; // Try the next model in the list
-                    }
-                } catch (e) {
-                    lastError = e.message;
-                    continue;
+                const data = await response.json();
+
+                if (data.error) {
+                    return `❌ API Error: ${data.error.message}`;
                 }
+
+                const responseText = data.candidates[0].content.parts[0].text;
+
+                if (isChat) {
+                    history.push({ role: "user", parts: [{ text: prompt }] });
+                    history.push({ role: "model", parts: [{ text: responseText }] });
+                }
+                return responseText;
+
+            } catch (err) {
+                return "❌ Connection Error: Ensure you are connected to the internet.";
             }
-            return "❌ Final Error: " + lastError + ". Please ensure your API Key is unrestricted in Google Cloud Console.";
         }
 
         async function send() {
             const i = document.getElementById('userInput');
             const m = i.value.trim();
             if(!m) return;
+
             add(m, 'user');
             i.value = '';
+
             const id = "t-"+Date.now();
             add("Thinking...", 'ai', id);
-            const res = await api(m, true);
-            document.getElementById(id).innerText = res;
+
+            const res = await callGemini(m, true);
+            const loader = document.getElementById(id);
+            if(loader) loader.innerText = res;
         }
 
         async function generate() {
             const c = document.getElementById('cName').value;
             const g = document.getElementById('pGoals').value;
             const r = document.getElementById('res');
-            if(!c || !g) return alert("Fill all fields");
-            r.style.display = "block"; r.innerText = "Generating...";
-            r.innerText = await api(`Write a professional proposal for ${c}. Context: ${g}`, false);
+            if(!c || !g) return alert("Please fill in both fields");
+
+            r.style.display = "block"; 
+            r.innerText = "Consulting AI...";
+
+            const result = await callGemini(`Write a detailed professional proposal for ${c}. Project context: ${g}. Use clear structure and headings.`, false);
+            r.innerText = result;
         }
 
         function add(t, s, id=null) {
