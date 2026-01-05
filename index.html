@@ -6,7 +6,7 @@
     <title>DefyBot AI | Workspace</title>
     <style>
         :root { --primary: #4f46e5; --bg: #f8fafc; --sidebar: #1e293b; --border: #e2e8f0; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
 
         /* Sidebar Navigation */
@@ -17,28 +17,23 @@
         .nav-btn.active { background: var(--primary); color: white; }
 
         /* Main Workspace */
-        .main { flex: 1; display: flex; flex-direction: column; position: relative; }
+        .main { flex: 1; display: flex; flex-direction: column; }
         .page { display: none; height: 100%; flex-direction: column; padding: 20px; }
         .page.active { display: flex; }
 
         /* Chat Window */
         #chatDisplay { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
-        .msg { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
         .ai { background: white; align-self: flex-start; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
 
         .input-bar { display: flex; gap: 10px; background: white; padding: 15px 20px; border-top: 1px solid var(--border); }
         .input-bar input { flex: 1; padding: 12px 20px; border: 1px solid var(--border); border-radius: 25px; outline: none; font-size: 14px; }
         
-        /* Proposal Card */
-        .card { max-width: 700px; margin: 20px auto; background: white; padding: 30px; border-radius: 15px; border: 1px solid var(--border); width: 100%; }
-        .card h3 { margin-bottom: 20px; color: var(--sidebar); }
-        input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin: 10px 0; outline: none; font-size: 14px; }
-        
-        .btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn:hover { background: #4338ca; }
 
-        #res { margin-top: 20px; font-size: 14px; white-space: pre-wrap; display: none; background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); color: #334155; }
+        #res { margin-top: 20px; font-size: 14px; white-space: pre-wrap; display: none; background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -52,7 +47,7 @@
     <main class="main">
         <section id="chatPage" class="page active">
             <div id="chatDisplay">
-                <div class="msg ai">Hello Mujtaba! I'm DefyBot. How can I assist you today?</div>
+                <div class="msg ai">Hello Mujtaba! All systems clear. How can I help?</div>
             </div>
             <div class="input-bar">
                 <input type="text" id="userInput" placeholder="Ask Gemini..." onkeypress="if(event.key==='Enter') send()">
@@ -61,15 +56,11 @@
         </section>
 
         <section id="propPage" class="page">
-            <div class="card">
+            <div style="max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 15px; border: 1px solid var(--border);">
                 <h3>Business Proposal Generator</h3>
-                <label style="font-size: 12px; font-weight: bold; color: #64748b;">CLIENT NAME</label>
-                <input type="text" id="cName" placeholder="e.g. Acme Corporation">
-                
-                <label style="font-size: 12px; font-weight: bold; color: #64748b;">PROJECT SCOPE</label>
-                <textarea id="pGoals" rows="6" placeholder="Describe the goals and deliverables..."></textarea>
-                
-                <button class="btn" style="width: 100%;" onclick="generate()">Generate Proposal</button>
+                <input type="text" id="cName" placeholder="Client Name" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;">
+                <textarea id="pGoals" rows="6" placeholder="Project Scope" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                <button class="btn" style="width: 100%; margin-top:15px;" onclick="generate()">Generate Proposal</button>
                 <div id="res"></div>
             </div>
         </section>
@@ -79,7 +70,6 @@
         const KEY = "AIzaSyBOp41_7YKoJ7PR6VdTTTmvw3csoSESK6c";
         let hist = [];
 
-        // Tab Switching
         function show(id, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -87,67 +77,72 @@
             btn.classList.add('active');
         }
 
-        // Gemini API Logic
         async function api(prompt, isChat) {
-            // Updated to v1 Stable URL
-            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${KEY}`;
+            // LIST OF MODELS TO TRY IN ORDER
+            const models = [
+                "gemini-1.5-flash",
+                "gemini-1.5-flash-8b",
+                "gemini-1.0-pro"
+            ];
             
-            const contents = isChat ? [...hist, {role:"user", parts:[{text:prompt}]}] : [{role:"user", parts:[{text:prompt}]}];
+            let lastError = "";
 
-            try {
-                const r = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents })
-                });
-                
-                const d = await r.json();
-                
-                if (d.error) {
-                    return "❌ Error: " + d.error.message;
-                }
+            for (let modelName of models) {
+                try {
+                    // We use v1beta as it is the most flexible for mixed model projects
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${KEY}`;
+                    
+                    const contents = isChat ? [...hist, {role:"user", parts:[{text:prompt}]}] : [{role:"user", parts:[{text:prompt}]}];
 
-                const txt = d.candidates[0].content.parts[0].text;
-                if(isChat) {
-                    hist.push({role:"user", parts:[{text:prompt}]});
-                    hist.push({role:"model", parts:[{text:txt}]});
+                    const r = await fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ contents })
+                    });
+                    
+                    const d = await r.json();
+                    
+                    if (r.ok && d.candidates) {
+                        const txt = d.candidates[0].content.parts[0].text;
+                        if(isChat) {
+                            hist.push({role:"user", parts:[{text:prompt}]});
+                            hist.push({role:"model", parts:[{text:txt}]});
+                        }
+                        return txt;
+                    } else {
+                        lastError = d.error ? d.error.message : "Unknown error";
+                        console.warn(`Model ${modelName} failed, trying next...`);
+                        continue; // Try the next model in the list
+                    }
+                } catch (e) {
+                    lastError = e.message;
+                    continue;
                 }
-                return txt;
-            } catch (e) { return "❌ Connection Error: Check your internet or API settings."; }
+            }
+            return "❌ Final Error: " + lastError + ". Please ensure your API Key is unrestricted in Google Cloud Console.";
         }
 
-        // Chat Handlers
         async function send() {
             const i = document.getElementById('userInput');
             const m = i.value.trim();
             if(!m) return;
-
             add(m, 'user');
             i.value = '';
-
             const id = "t-"+Date.now();
             add("Thinking...", 'ai', id);
-
             const res = await api(m, true);
-            const loader = document.getElementById(id);
-            if(loader) loader.innerText = res;
+            document.getElementById(id).innerText = res;
         }
 
-        // Proposal Handlers
         async function generate() {
             const c = document.getElementById('cName').value;
             const g = document.getElementById('pGoals').value;
             const r = document.getElementById('res');
-            if(!c || !g) return alert("Please fill in both fields");
-
-            r.style.display = "block"; 
-            r.innerText = "Consulting Gemini AI...";
-
-            const result = await api(`Write a professional business proposal for ${c}. Context: ${g}. Please use clear headings.`, false);
-            r.innerText = result;
+            if(!c || !g) return alert("Fill all fields");
+            r.style.display = "block"; r.innerText = "Generating...";
+            r.innerText = await api(`Write a professional proposal for ${c}. Context: ${g}`, false);
         }
 
-        // UI Message Helper
         function add(t, s, id=null) {
             const d = document.getElementById('chatDisplay');
             const v = document.createElement('div');
