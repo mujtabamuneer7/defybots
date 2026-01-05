@@ -1,44 +1,58 @@
 export async function onRequestPost({ request, env }) {
   try {
-    const { prompt, history = [] } = await request.json();
+    if (!env.GEMINI_API_KEY) {
+      return new Response(
+        JSON.stringify({ error: "API key missing" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
-    const apiKey = env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return new Response("API key missing", { status: 500 });
+    const body = await request.json();
+    const prompt = body.prompt;
+    const history = body.history || [];
+
+    if (!prompt) {
+      return new Response(
+        JSON.stringify({ error: "Prompt missing" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
     }
 
     const url =
-      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" +
-      apiKey;
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" +
+      env.GEMINI_API_KEY;
 
-    const contents = [
-      ...history,
-      { role: "user", parts: [{ text: prompt }] }
-    ];
-
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents })
+      body: JSON.stringify({
+        contents: [
+          ...history,
+          { role: "user", parts: [{ text: prompt }] }
+        ]
+      })
     });
 
-    const data = await res.json();
+    const data = await response.json();
 
-    if (!res.ok) {
-      throw new Error(data.error?.message || "Gemini API failed");
+    if (!data.candidates || !data.candidates[0]) {
+      return new Response(
+        JSON.stringify({ error: "Invalid Gemini response", raw: data }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
     }
 
-    const text = data.candidates[0].content.parts[0].text;
+    const reply = data.candidates[0].content.parts[0].text;
 
     return new Response(
-      JSON.stringify({ text }),
+      JSON.stringify({ reply }),
       { headers: { "Content-Type": "application/json" } }
     );
 
   } catch (err) {
     return new Response(
       JSON.stringify({ error: err.message }),
-      { status: 500 }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }
