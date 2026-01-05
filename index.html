@@ -3,184 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Gemini Powered</title>
+    <title>DefyBot AI | Gemini</title>
     <style>
-        :root {
-            --primary: #667eea;
-            --secondary: #764ba2;
-            --bg-light: #f9fafb;
-            --border: #e5e7eb;
-            --text-main: #1f2937;
-        }
+        :root { --primary: #667eea; --secondary: #764ba2; --bg: #f9fafb; --border: #e5e7eb; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        /* Login Overlay */
+        #loginPage { position: fixed; inset: 0; background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { background: white; padding: 40px; border-radius: 15px; text-align: center; width: 90%; max-width: 350px; }
 
-        /* Login Screen */
-        #loginPage {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
+        /* Sidebar */
+        .sidebar { width: 260px; background: white; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; z-index: 10; }
+        .nav-btn { width: 100%; padding: 12px; margin-bottom: 10px; border: none; background: none; text-align: left; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: #f0f0ff; color: var(--primary); font-weight: bold; }
 
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        /* App Layout */
-        #appContainer { display: none; height: 100vh; background: var(--bg-light); }
-        
-        .sidebar {
-            width: 260px;
-            background: white;
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* Main Area */
+        .main { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; }
+        .content-section { display: none; flex: 1; padding: 20px; overflow-y: auto; }
+        .content-section.active { display: flex; flex-direction: column; }
 
         /* Chat UI */
-        .chat-area {
-            flex: 1;
-            max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .msg { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 15px; line-height: 1.5; }
-        .ai-msg { background: white; align-self: flex-start; border: 1px solid var(--border); }
+        #chatDisplay { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
+        .ai-msg { background: white; align-self: flex-start; border: 1px solid var(--border); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .user-msg { background: var(--primary); color: white; align-self: flex-end; }
 
         /* Input Area */
-        .input-box {
-            background: white;
-            padding: 20px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 10px;
-        }
+        .input-container { padding: 20px; background: white; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 12px 20px; border: 1px solid var(--border); border-radius: 25px; outline: none; }
+        .send-btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; }
 
-        input {
-            flex: 1;
-            padding: 12px 20px;
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            outline: none;
-        }
-
-        button.send-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        /* Utility Classes */
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div id="loginPage">
-        <div class="login-card">
+        <div class="login-box">
             <h2>🤖 DefyBot AI</h2>
-            <p style="margin: 10px 0 25px; color: #666;">Enter Password to access</p>
-            <input type="password" id="passInput" placeholder="Password..." style="margin-bottom: 15px; width: 100%;">
-            <button class="send-btn" onclick="checkAuth()" style="width: 100%;">Unlock</button>
+            <p style="margin: 10px 0 20px; color: #666;">Enter Password</p>
+            <input type="password" id="passInput" placeholder="Password..." style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #ddd;">
+            <button class="send-btn" style="width:100%" onclick="checkAuth()">Unlock</button>
         </div>
     </div>
 
-    <div id="appContainer" style="display: flex;">
-        <aside class="sidebar">
-            <h3>DefyBot AI</h3>
-            <hr style="margin: 20px 0;">
-            <p style="font-size: 12px; color: #888;">MODES</p>
-            <button onclick="switchMode('chat')" style="margin-top: 10px; padding: 10px; text-align: left; cursor: pointer;">💬 Chat Mode</button>
-            <button onclick="switchMode('tools')" style="margin-top: 5px; padding: 10px; text-align: left; cursor: pointer;">📄 Writing Tools</button>
-        </aside>
+    <aside class="sidebar">
+        <h2 style="margin-bottom: 20px;">DefyBot AI</h2>
+        <p style="font-size: 11px; color: #888; margin-bottom: 10px; letter-spacing: 1px;">MODES</p>
+        <button class="nav-btn active" onclick="showSection('chatSection')">💬 Chat Mode</button>
+        <button class="nav-btn" onclick="showSection('toolSection')">📄 Writing Tools</button>
+        <div style="margin-top: auto; font-size: 12px; color: #999;">Powered by Gemini 1.5</div>
+    </aside>
 
-        <main class="main-content">
-            <section id="chatSection" class="chat-area">
-                <div class="messages-container" id="chatDisplay">
-                    <div class="msg ai-msg">Welcome, Mujtaba. How can I assist with your training or projects today?</div>
+    <main class="main">
+        <section id="chatSection" class="content-section active">
+            <div id="chatDisplay">
+                <div class="msg ai-msg">Welcome, Mujtaba. How can I assist with your training or projects today?</div>
+            </div>
+            <div class="input-container">
+                <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendToGemini()">
+                <button class="send-btn" onclick="sendToGemini()">Send</button>
+            </div>
+        </section>
+
+        <section id="toolSection" class="content-section">
+            <h2>Writing Tools</h2>
+            <p style="color: #666; margin-top: 10px;">Select a tool to generate professional documents.</p>
+            <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                    <h4>Cover Letter</h4>
+                    <p style="font-size: 12px; margin: 10px 0;">Generate job applications.</p>
+                    <button class="send-btn" style="font-size: 12px; padding: 5px 15px;">Open</button>
                 </div>
-                <div class="input-box">
-                    <input type="text" id="chatInput" placeholder="Message Gemini..." onkeypress="handleEnter(event)">
-                    <button class="send-btn" onclick="sendToGemini()">Send</button>
+                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                    <h4>Proposal</h4>
+                    <p style="font-size: 12px; margin: 10px 0;">Generate business deals.</p>
+                    <button class="send-btn" style="font-size: 12px; padding: 5px 15px;">Open</button>
                 </div>
-            </section>
-        </main>
-    </div>
+            </div>
+        </section>
+    </main>
 
     <script>
-        // CONFIGURATION
-        const WORKER_URL = "YOUR_CLOUDFLARE_WORKER_URL_HERE"; 
-        let history = []; // Stores the session memory
+        const API_KEY = "AIzaSyBOp41_7YKoJ7PR6VdTTTmvw3csoSESK6c";
+        let history = [];
 
-        // AUTHENTICATION
         function checkAuth() {
             const pass = document.getElementById('passInput').value;
             if (pass.toLowerCase() === 'mujtaba') {
                 document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('appContainer').style.display = 'flex';
             } else {
                 alert("Incorrect Password");
             }
         }
 
-        // CHAT LOGIC
+        function showSection(id) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
         async function sendToGemini() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
             if (!message) return;
 
-            // Update UI
             appendMsg(message, 'user-msg');
             input.value = '';
 
-            // Update History
+            // Add user message to history
             history.push({ role: "user", parts: [{ text: message }] });
 
             try {
-                const response = await fetch(WORKER_URL, {
+                // TALK DIRECTLY TO GOOGLE
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: history })
                 });
 
                 const data = await response.json();
-                const aiResponse = data.reply;
-
-                appendMsg(aiResponse, 'ai-msg');
-                history.push({ role: "model", parts: [{ text: aiResponse }] });
+                
+                if (data.candidates && data.candidates[0].content) {
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    appendMsg(aiText, 'ai-msg');
+                    // Add AI message to history
+                    history.push({ role: "model", parts: [{ text: aiText }] });
+                } else {
+                    throw new Error("Invalid API Response");
+                }
 
             } catch (err) {
-                appendMsg("System Error: Could not reach the Cloudflare Worker.", 'ai-msg');
+                appendMsg("System Error: Could not connect to Gemini API. Check your internet or API key.", 'ai-msg');
+                console.error(err);
             }
         }
 
@@ -192,8 +150,6 @@
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
-
-        function handleEnter(e) { if (e.key === 'Enter') sendToGemini(); }
     </script>
 </body>
 </html>
