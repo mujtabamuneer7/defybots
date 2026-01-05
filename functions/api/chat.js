@@ -1,10 +1,11 @@
-// --- YOUR SETTINGS ---
+// --- 1. CONFIGURATION ---
 const API_KEY = "AIzaSyBOp41_7YKoJ7PR6VdTTTmvw3csoSESK6c";
-let chatHistory = []; // This stores the memory of the chat
+let chatHistory = []; // Stores conversation memory
 
-// --- AUTHENTICATION ---
+// --- 2. LOGIN LOGIC ---
 function checkAuth() {
     const pass = document.getElementById('passInput').value;
+    // Password is set to 'mujtaba' based on your previous messages
     if (pass.toLowerCase() === 'mujtaba') {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('appContainer').style.display = 'flex';
@@ -13,24 +14,25 @@ function checkAuth() {
     }
 }
 
-// --- CHAT LOGIC ---
+// --- 3. CHAT LOGIC (DIRECT TO GOOGLE) ---
 async function sendToGemini() {
     const input = document.getElementById('chatInput');
     const message = input.value.trim();
+    
     if (!message) return;
 
-    // 1. Show user message in UI
+    // Show User Message
     appendMsg(message, 'user-msg');
     input.value = '';
 
-    // 2. Add message to memory
+    // Save to Memory
     chatHistory.push({
         role: "user",
         parts: [{ text: message }]
     });
 
     try {
-        // 3. Talk DIRECTLY to Google Gemini API
+        // We call Google's API directly from the browser
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -39,30 +41,30 @@ async function sendToGemini() {
             })
         });
 
-        const data = await response.json();
-
-        // 4. Check for API Errors
-        if (data.error) {
-            appendMsg("Google API Error: " + data.error.message, 'ai-msg');
-            return;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error.message || "API Request Failed");
         }
 
-        // 5. Get AI text and show it
+        const data = await response.json();
         const aiResponse = data.candidates[0].content.parts[0].text;
+
+        // Show AI Response
         appendMsg(aiResponse, 'ai-msg');
 
-        // 6. Save AI response to memory
+        // Save AI Response to Memory
         chatHistory.push({
             role: "model",
             parts: [{ text: aiResponse }]
         });
 
     } catch (err) {
-        console.error(err);
-        appendMsg("System Error: Check your internet connection or API key.", 'ai-msg');
+        console.error("Gemini Error:", err);
+        appendMsg("System Error: " + err.message, 'ai-msg');
     }
 }
 
+// --- 4. HELPERS ---
 function appendMsg(text, type) {
     const container = document.getElementById('chatDisplay');
     const div = document.createElement('div');
@@ -75,5 +77,7 @@ function appendMsg(text, type) {
 }
 
 function handleEnter(e) {
-    if (e.key === 'Enter') sendToGemini();
+    if (e.key === 'Enter') {
+        sendToGemini();
+    }
 }
