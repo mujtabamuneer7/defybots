@@ -1,29 +1,43 @@
-export async function onRequestPost(context) {
-    const { request, env } = context;
+let chatHistory = []; // Memory for the bot
 
-    // 1. Get the conversation from the frontend
-    const { contents } = await request.json();
+async function sendToGemini() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
 
-    // 2. Use the API Key from your Cloudflare Pages Dashboard (Environment Variables)
-    const API_KEY = env.GEMINI_API_KEY;AIzaSyBOp41_7YKoJ7PR6VdTTTmvw3csoSESK6c
-    const model = "gemini-1.5-flash"; // You can also use gemini-1.5-pro
-    
-    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
+    // Show user message
+    appendMsg(message, 'user-msg');
+    input.value = '';
+
+    // Add to memory
+    chatHistory.push({ role: "user", parts: [{ text: message }] });
 
     try {
-        const response = await fetch(apiURL, {
+        // This calls the Cloudflare Pages Function
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents })
+            body: JSON.stringify({ contents: chatHistory })
         });
 
         const data = await response.json();
-        const aiText = data.candidates[0].content.parts[0].text;
+        
+        // Add AI response to UI
+        appendMsg(data.reply, 'ai-msg');
+        
+        // Add to memory
+        chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
 
-        return new Response(JSON.stringify({ reply: aiText }), {
-            headers: { "Content-Type": "application/json" }
-        });
-    } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    } catch (err) {
+        appendMsg("System Error: Could not reach the API. Ensure your '/functions' folder exists on GitHub.", 'ai-msg');
     }
+}
+
+function appendMsg(text, type) {
+    const container = document.getElementById('chatDisplay');
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.innerText = text;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
 }
