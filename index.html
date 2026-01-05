@@ -3,78 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Tailwind Edition</title>
+    <title>DefyBot AI | Integrated</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-900 h-screen flex overflow-hidden">
 
-    <div id="loginOverlay" class="fixed inset-0 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center z-[9999]">
-        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md text-center animate-bounce-in">
-            <h2 class="text-3xl font-extrabold text-indigo-600">🤖 DefyBot AI</h2>
-            <p class="text-slate-500 mt-2">Enter your access code to begin</p>
-            <input type="password" id="passCode" placeholder="Access Code" class="w-full mt-6 p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
-            <button onclick="unlock()" class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-200">Unlock</button>
+    <div id="loginOverlay" class="fixed inset-0 bg-indigo-600 flex items-center justify-center z-[9999]">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+            <h2 class="text-2xl font-bold text-indigo-600">🤖 DefyBot AI</h2>
+            <input type="password" id="passCode" placeholder="Password" class="w-full mt-4 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-400">
+            <button onclick="unlock()" class="w-full mt-4 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-all">Access Bot</button>
         </div>
     </div>
 
-    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col p-6 hidden md:flex">
-        <div class="text-2xl font-black text-indigo-600 tracking-tight mb-10">DefyBot AI</div>
-        
+    <aside class="w-64 bg-white border-r flex flex-col p-4 hidden md:flex">
+        <div class="text-xl font-black text-indigo-600 mb-8">DefyBot AI</div>
         <nav class="space-y-2 flex-1">
-            <button onclick="switchPage('chatPage', this)" class="nav-link active w-full flex items-center gap-3 p-3 rounded-xl bg-indigo-50 text-indigo-700 font-semibold transition-all">
-                <span>💬</span> Chat Mode
-            </button>
-            <button onclick="switchPage('proposalPage', this)" class="nav-link w-full flex items-center gap-3 p-3 rounded-xl text-slate-600 hover:bg-slate-50 font-medium transition-all">
-                <span>📄</span> Proposal Gen
-            </button>
+            <button onclick="switchPage('chatPage', this)" class="nav-btn w-full text-left p-3 rounded-xl bg-indigo-50 text-indigo-700 font-semibold">💬 Chat Mode</button>
+            <button onclick="switchPage('proposalPage', this)" class="nav-btn w-full text-left p-3 rounded-xl text-slate-600 hover:bg-slate-50">📄 Proposal Gen</button>
         </nav>
-
-        <div class="pt-6 border-t border-slate-100">
-            <div class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Powered by</div>
-            <div class="text-sm font-medium text-slate-600">Gemini 1.5 Flash</div>
-        </div>
     </aside>
 
-    <main class="flex-1 flex flex-col relative h-full">
+    <main class="flex-1 flex flex-col h-full">
         
-        <section id="chatPage" class="page active flex flex-col h-full p-6">
-            <div id="chat-window" class="flex-1 overflow-y-auto space-y-4 pr-4 custom-scrollbar">
-                <div class="flex flex-col items-start">
-                    <div class="bg-white border border-slate-200 p-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] text-sm leading-relaxed">
-                        Welcome, Mujtaba. How can I assist with your projects or training today?
-                    </div>
+        <section id="chatPage" class="page flex flex-col h-full p-4 md:p-6">
+            <div id="chat-window" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                <div class="bg-white border p-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] text-sm">
+                    Welcome, Mujtaba. How can I assist with your projects or training today?
                 </div>
             </div>
 
-            <div class="mt-4 bg-white border border-slate-200 rounded-2xl p-2 flex items-center shadow-lg">
-                <input type="text" id="userInput" placeholder="Ask Gemini..." onkeypress="if(event.key==='Enter') sendChat()" class="flex-1 p-3 outline-none text-sm">
-                <button onclick="sendChat()" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-all">Send</button>
+            <div class="mt-4 bg-white border rounded-2xl p-2 flex items-center shadow-md">
+                <input type="text" id="userInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendChat()" class="flex-1 p-3 outline-none text-sm">
+                <button onclick="sendChat()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold hover:bg-indigo-700">Send</button>
             </div>
         </section>
 
-        <section id="proposalPage" class="page hidden flex-col items-center justify-start p-10 overflow-y-auto">
-            <div class="w-full max-w-2xl bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
-                <h3 class="text-2xl font-bold mb-2">Business Proposal</h3>
-                <p class="text-slate-500 text-sm mb-6">Enter project details to generate a professional document.</p>
-                
+        <section id="proposalPage" class="page hidden p-6 overflow-y-auto">
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl border shadow-sm">
+                <h3 class="text-xl font-bold mb-4">Business Proposal</h3>
                 <div class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold uppercase text-slate-400">Client Name</label>
-                        <input type="text" id="clientName" class="w-full mt-1 p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold uppercase text-slate-400">Project Goals & Scope</label>
-                        <textarea id="projectGoals" rows="4" class="w-full mt-1 p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Describe what needs to be done..."></textarea>
-                    </div>
-                    <button onclick="generateProposal()" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
-                        Generate Professional Proposal
-                    </button>
+                    <input type="text" id="clientName" placeholder="Client Name" class="w-full p-3 border rounded-xl outline-none">
+                    <textarea id="projectGoals" rows="4" placeholder="Project details..." class="w-full p-3 border rounded-xl outline-none"></textarea>
+                    <button onclick="generateProposal()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">Generate</button>
                 </div>
-
-                <div id="toolResult" class="hidden mt-8 p-6 bg-slate-50 border-l-4 border-indigo-600 rounded-xl text-sm leading-loose whitespace-pre-wrap text-slate-700"></div>
+                <div id="toolResult" class="hidden mt-6 p-4 bg-slate-50 border-l-4 border-indigo-600 rounded text-sm whitespace-pre-wrap"></div>
             </div>
         </section>
-
     </main>
 
     <script>
@@ -83,41 +62,51 @@
 
         function unlock() {
             if (document.getElementById('passCode').value.toLowerCase() === 'mujtaba') {
-                document.getElementById('loginOverlay').classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => document.getElementById('loginOverlay').remove(), 500);
-            } else {
-                alert("Access Denied");
-            }
+                document.getElementById('loginOverlay').style.display = 'none';
+            } else { alert("Access Denied"); }
         }
 
         function switchPage(pageId, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
-            document.getElementById(pageId).classList.add('flex');
-            
-            document.querySelectorAll('.nav-link').forEach(l => {
-                l.classList.remove('bg-indigo-50', 'text-indigo-700', 'font-semibold');
-                l.classList.add('text-slate-600', 'hover:bg-slate-50', 'font-medium');
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('bg-indigo-50', 'text-indigo-700', 'font-semibold');
+                b.classList.add('text-slate-600');
             });
             btn.classList.add('bg-indigo-50', 'text-indigo-700', 'font-semibold');
         }
 
+        // --- THE FIXED API CALL ---
         async function callGemini(prompt, isChat = true) {
+            // Using v1beta which is most compatible with 1.5-flash
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-            if (isChat) history.push({ role: "user", parts: [{ text: prompt }] });
+            
+            const messageObj = { role: "user", parts: [{ text: prompt }] };
+            if (isChat) history.push(messageObj);
 
             try {
                 const response = await fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: isChat ? history : [{ role: "user", parts: [{ text: prompt }] }] })
+                    body: JSON.stringify({ 
+                        contents: isChat ? history : [messageObj] 
+                    })
                 });
+
+                if (!response.ok) {
+                    const errorDetails = await response.json();
+                    throw new Error(errorDetails.error.message || "Unknown API Error");
+                }
+
                 const data = await response.json();
                 const aiText = data.candidates[0].content.parts[0].text;
+                
                 if (isChat) history.push({ role: "model", parts: [{ text: aiText }] });
                 return aiText;
+
             } catch (err) {
-                return "⚠️ Connection error. Please verify your API setup.";
+                console.error("Gemini Error:", err);
+                return `❌ API Error: ${err.message}. Ensure your key has 'Generative Language API' enabled in Google Cloud Console.`;
             }
         }
 
@@ -130,7 +119,7 @@
             input.value = '';
 
             const loadingId = "L-" + Date.now();
-            appendMsg("Generating response...", 'ai', loadingId);
+            appendMsg("Thinking...", 'ai', loadingId);
 
             const aiRes = await callGemini(msg, true);
             document.getElementById(loadingId).innerText = aiRes;
@@ -139,13 +128,13 @@
         async function generateProposal() {
             const client = document.getElementById('clientName').value;
             const goals = document.getElementById('projectGoals').value;
-            if (!client || !goals) return alert("Fill all fields");
+            if (!client || !goals) return alert("Please fill fields");
 
             const resBox = document.getElementById('toolResult');
             resBox.classList.remove('hidden');
-            resBox.innerText = "Processing proposal details...";
+            resBox.innerText = "Generating...";
 
-            const prompt = `Write a professional business proposal for ${client}. Project scope: ${goals}. Formatting: Professional, include clear headers.`;
+            const prompt = `Generate a business proposal for ${client}. Focus: ${goals}`;
             const result = await callGemini(prompt, false);
             resBox.innerText = result;
         }
@@ -157,8 +146,8 @@
             
             const bubble = document.createElement('div');
             bubble.className = sender === 'user' 
-                ? "bg-indigo-600 text-white p-4 rounded-2xl rounded-br-none shadow-md max-w-[80%] text-sm"
-                : "bg-white border border-slate-200 p-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] text-sm";
+                ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none shadow-sm max-w-[85%] text-sm"
+                : "bg-white border p-3 rounded-2xl rounded-bl-none shadow-sm max-w-[85%] text-sm";
             
             if (id) bubble.id = id;
             bubble.innerText = text;
