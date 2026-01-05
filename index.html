@@ -1,106 +1,950 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>DefyBot AI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DefyBot AI - AI-Powered Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <!-- Tailwind CSS -->
-  <link rel="stylesheet" href="/dist/output.css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: #f7f7f8;
+            min-height: 100vh;
+            color: #2c2d30;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .login-logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c2d30;
+        }
+
+        .login-logo p {
+            color: #6e6e80;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .login-form {
+            margin-top: 32px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Main App Container */
+        .app-container {
+            display: none;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 260px;
+            background: #f5f5f5;
+            border-right: 1px solid #e5e5e5;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2d30;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 8px;
+        }
+
+        .sidebar-btn {
+            width: 100%;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2c2d30;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-btn:hover {
+            background: #e5e5e5;
+        }
+
+        .sidebar-btn.active {
+            background: #e5e5e5;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2d30;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2c2d30;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #e5e5e5;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .content-area.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .welcome-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        .welcome-screen h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c2d30;
+            margin-bottom: 12px;
+        }
+
+        .welcome-screen p {
+            font-size: 16px;
+            color: #6e6e80;
+            max-width: 600px;
+        }
+
+        /* Tool Selection Page */
+        .tool-selection {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        .tool-selection-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .tool-selection-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c2d30;
+            margin-bottom: 8px;
+        }
+
+        .tool-selection-header p {
+            color: #6e6e80;
+            font-size: 16px;
+        }
+
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mode-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mode-card:hover {
+            border-color: #667eea;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        .mode-card-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .mode-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c2d30;
+            margin-bottom: 8px;
+        }
+
+        .mode-card p {
+            color: #6e6e80;
+            font-size: 14px;
+        }
+
+        /* Form Mode */
+        .form-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2d30;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: #6e6e80;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2c2d30;
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #e5e5e5;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #2c2d30;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d1d6;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .result-box {
+            margin-top: 32px;
+            padding: 24px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .result-box h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c2d30;
+            margin-bottom: 16px;
+        }
+
+        .result-text {
+            color: #2c2d30;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        /* Chat Mode */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .chat-message {
+            margin-bottom: 24px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.user {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .chat-message.assistant {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            line-height: 1.6;
+        }
+
+        .chat-message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.assistant .message-content {
+            background: #f5f5f5;
+            color: #2c2d30;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-container {
+            border-top: 1px solid #e5e5e5;
+            padding: 20px 24px;
+            background: white;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1px solid #d1d1d6;
+            border-radius: 20px;
+            font-size: 15px;
+            resize: none;
+            max-height: 150px;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .chat-send-btn {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .chat-send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .message-content {
+                max-width: 90%;
+            }
+        }
+    </style>
 </head>
-
-<body class="bg-gray-100 text-gray-900 min-h-screen">
-
-<div class="flex h-screen">
-
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
-    
-    <!-- Logo -->
-    <div class="px-4 py-4 border-b">
-      <h1 class="text-xl font-bold flex items-center gap-2">
-        🤖 DefyBot
-      </h1>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="login-logo">
+                <div class="login-logo-icon">🤖</div>
+                <h1>DefyBot AI</h1>
+                <p>Enter password to continue</p>
+            </div>
+            <div class="login-form">
+                <input 
+                    type="password" 
+                    class="login-input" 
+                    id="passwordInput" 
+                    placeholder="Enter password"
+                    onkeypress="handleLoginKeypress(event)"
+                >
+                <button class="login-btn" onclick="handleLogin()">Access DefyBot AI</button>
+                <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Menu -->
-    <div class="p-4 space-y-2 flex-1">
-      <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm">
-        ➕ New Chat
-      </button>
-
-      <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
-        📄 Proposal Generator
-      </button>
-
-      <button class="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm">
-        ✉️ Cover Letter Generator
-      </button>
-    </div>
-
-    <!-- Footer -->
-    <div class="p-4 border-t">
-      <button id="themeToggle" class="w-full px-3 py-2 rounded-lg bg-gray-200 text-sm">
-        🌙 Toggle Theme
-      </button>
-    </div>
-  </aside>
-
-  <!-- MAIN CHAT AREA -->
-  <main class="flex-1 flex flex-col">
-
-    <!-- Header -->
-    <header class="h-14 px-6 flex items-center border-b bg-white">
-      <h2 class="font-semibold text-lg">New Chat</h2>
-    </header>
-
-    <!-- Messages -->
-    <section class="flex-1 overflow-y-auto px-6 py-6">
-      <div class="max-w-3xl mx-auto space-y-6">
-
-        <!-- Bot message -->
-        <div class="flex gap-3">
-          <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
-            🤖
-          </div>
-          <div class="bg-white p-4 rounded-xl shadow text-sm w-full">
-            👋 Hello! Ask me anything.
-          </div>
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🤖</div>
+                <div class="sidebar-title">DefyBot AI</div>
+            </div>
+            <div class="sidebar-content">
+                <button class="sidebar-btn active" onclick="navigateTo('home')">
+                    <span>🏠</span>
+                    <span>Home</span>
+                </button>
+                <button class="sidebar-btn" onclick="navigateTo('cover-letter')">
+                    <span>📧</span>
+                    <span>Cover Letter Generator</span>
+                </button>
+                <button class="sidebar-btn" onclick="navigateTo('proposal')">
+                    <span>📝</span>
+                    <span>Proposal Generator</span>
+                </button>
+            </div>
         </div>
 
-      </div>
-    </section>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <div class="header-title">DefyBot AI</div>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
 
-    <!-- Input -->
-    <footer class="border-t bg-white p-4">
-      <div class="max-w-3xl mx-auto flex items-center gap-3">
+            <!-- Home/Welcome -->
+            <div class="content-area active" id="home">
+                <div class="welcome-screen">
+                    <div class="welcome-icon">🤖</div>
+                    <h2>Welcome to DefyBot AI</h2>
+                    <p>Your intelligent AI assistant for generating professional cover letters and proposals. Select a tool from the sidebar to get started.</p>
+                </div>
+            </div>
 
-        <input
-          type="text"
-          placeholder="Send a message..."
-          class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+            <!-- Cover Letter Tool Selection -->
+            <div class="content-area" id="cover-letter">
+                <div class="tool-selection">
+                    <div class="tool-selection-header">
+                        <h2>Cover Letter Generator</h2>
+                        <p>Choose how you'd like to create your cover letter</p>
+                    </div>
+                    <div class="mode-buttons">
+                        <div class="mode-card" onclick="showMode('cover-form')">
+                            <div class="mode-card-icon">📝</div>
+                            <h3>Form Mode</h3>
+                            <p>Fill out a structured form with specific fields</p>
+                        </div>
+                        <div class="mode-card" onclick="showMode('cover-chat')">
+                            <div class="mode-card-icon">💬</div>
+                            <h3>Chat Mode</h3>
+                            <p>Have a conversation with AI to create your letter</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <button class="px-4 py-3 rounded-xl bg-blue-500 text-white hover:bg-blue-600">
-          ➤
-        </button>
+            <!-- Cover Letter Form Mode -->
+            <div class="content-area" id="cover-form">
+                <div class="form-container">
+                    <button class="back-btn" onclick="navigateTo('cover-letter')">
+                        ← Back to options
+                    </button>
+                    <div class="form-header">
+                        <h2>Cover Letter - Form Mode</h2>
+                        <p>Fill in the details below to generate your cover letter</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Client Name</label>
+                        <input type="text" class="form-input" id="coverClientName" placeholder="e.g., John Smith or ABC Corporation">
+                    </div>
 
-      </div>
-    </footer>
+                    <div class="form-group">
+                        <label class="form-label">Job Title/Position</label>
+                        <input type="text" class="form-input" id="coverJobTitle" placeholder="e.g., Senior Software Engineer">
+                    </div>
 
-  </main>
+                    <div class="form-group">
+                        <label class="form-label">Job Description/Requirements</label>
+                        <textarea class="form-input form-textarea" id="coverJobDesc" placeholder="Paste the job description or key requirements here..."></textarea>
+                    </div>
 
-</div>
+                    <button class="submit-btn" onclick="generateCoverLetter()">Generate Cover Letter</button>
 
-<!-- Dark mode toggle -->
-<script>
-  const toggle = document.getElementById("themeToggle");
-  toggle.addEventListener("click", () => {
-    document.documentElement.classList.toggle("dark");
-    document.body.classList.toggle("bg-gray-900");
-    document.body.classList.toggle("text-gray-100");
-  });
-</script>
+                    <div class="result-box" id="coverResult">
+                        <h3>Your Generated Cover Letter:</h3>
+                        <div class="result-text" id="coverResultText"></div>
+                    </div>
+                </div>
+            </div>
 
-</body>
-</html>
+            <!-- Cover Letter Chat Mode -->
+            <div class="content-area" id="cover-chat">
+                <button class="back-btn" onclick="navigateTo('cover-letter')" style="margin: 16px 24px;">
+                    ← Back to options
+                </button>
+                <div class="chat-container">
+                    <div class="chat-messages" id="coverChatMessages">
+                        <div class="chat-message assistant">
+                            <div class="message-content">
+                                Hi! I'm here to help you create a professional cover letter. Tell me about the position you're applying for, and I'll guide you through the process. What job are you interested in?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea 
+                                class="chat-input" 
+                                id="coverChatInput" 
+                                placeholder="Type your message..."
+                                rows="1"
+                                onkeypress="handleChatKeypress(event, 'cover')"
+                            ></textarea>
+                            <button class="chat-send-btn" onclick="sendChatMessage('cover')">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposal Tool Selection -->
+            <div class="content-area" id="proposal">
+                <div class="tool-selection">
+                    <div class="tool-selection-header">
+                        <h2>Proposal Generator</h2>
+                        <p>Choose how you'd like to create your proposal</p>
+                    </div>
+                    <div class="mode-buttons">
+                        <div class="mode-card" onclick="showMode('proposal-form')">
+                            <div class="mode-card-icon">📝</div>
+                            <h3>Form Mode</h3>
+                            <p>Fill out a structured form with specific fields</p>
+                        </div>
+                        <div class="mode-card" onclick="showMode('proposal-chat')">
+                            <div class="mode-card-icon">💬</div>
+                            <h3>Chat Mode</h3>
+                            <p>Have a conversation with AI to create your proposal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposal Form Mode -->
+            <div class="content-area" id="proposal-form">
+                <div class="form-container">
+                    <button class="back-btn" onclick="navigateTo('proposal')">
+                        ← Back to options
+                    </button>
+                    <div class="form-header">
+                        <h2>Proposal - Form Mode</h2>
+                        <p>Fill in the details below to generate your proposal</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Client Name</label>
+                        <input type="text" class="form-input" id="proposalClientName" placeholder="e.g., ABC Corporation">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Job/Project Title</label>
+                        <input type="text" class="form-input" id="proposalJobTitle" placeholder="e.g., Website Redesign Project">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Proposal Details</label>
+                        <textarea class="form-input form-textarea" id="proposalDetails" placeholder="Describe the project scope, deliverables, timeline, and any other important details..."></textarea>
+                    </div>
+
+                    <button class="submit-btn" onclick="generateProposal()">Generate Proposal</button>
+
+                    <div class="result-box" id="proposalResult">
+                        <h3>Your Generated Proposal:</h3>
+                        <div class="result-text" id="proposalResultText"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposal Chat Mode -->
+            <div class="content-area" id="proposal-chat">
+                <button class="back-btn" onclick="navigateTo('proposal')" style="margin: 16px 24px;">
+                    ← Back to options
+                </button>
+                <div class="chat-container">
+                    <div class="chat-messages" id="proposalChatMessages">
+                        <div class="chat-message assistant">
+                            <div class="message-content">
+                                Hello! I'm ready to help you create a compelling business proposal. Let's start by discussing the project. What type of proposal are you looking to create?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea 
+                                class="chat-input" 
+                                id="proposalChatInput" 
+                                placeholder="Type your message..."
+                                rows="1"
+                                onkeypress="handleChatKeypress(event, 'proposal')"
+                            ></textarea>
+                            <button class="chat-send-btn" onclick="sendChatMessage('proposal')">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login functionality
+        function handleLogin() {
+            const password = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (password.toLowerCase() === 'mujtaba') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function handleLoginKeypress(event) {
+            if (event.key === 'Enter') {
+                handleLogin();
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        // Navigation
+        function navigateTo(page) {
+            // Remove active class from all sidebar buttons
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to clicked button
+            event.target.closest('.sidebar-btn').classList.add('active');
+
+            // Hide all content areas
+            document.querySelectorAll('.content-area').forEach(area => {
+                area.classList.remove('active');
+            });
+
+            // Show selected content area
+            document.getElementById(page).classList.add('active');
+        }
+
+        function showMode(modeId) {
+            document.querySelectorAll('.content-area').forEach(area => {
+                area.classList.remove('active');
+            });
+            document.getElementById(modeId).classList.add('active');
+        }
+
+        // Cover Letter Form
+        function generateCoverLetter() {
+            const clientName = document.getElementById('coverClientName').value;
+            const jobTitle = document.getElementById('coverJobTitle').value;
+            const jobDesc = document.getElementById('coverJobDesc').value;
+
+            if (!clientName || !jobTitle) {
+                alert('Please fill in at least Client Name and Job Title');
+                return;
+            }
+
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const coverLetter = `Dear Hiring Manager at ${clientName},
+
+I am writing to express my strong interest in the ${jobTitle} position at ${clientName}. After carefully reviewing the job description, I am confident that my skills and experience make me an excellent candidate for this role.
+
+${jobDesc ? `I was particularly excited to see that you're looking for someone with expertise in the areas you've outlined. My background aligns well with these requirements, and I am eager to bring my experience to your team.` : ''}
+
+Throughout my career, I have consistently demonstrated my ability to deliver high-quality results and collaborate effectively with diverse teams. I am passionate about continuous learning and staying current with industry best practices.
+
+What draws me to ${clientName} is your reputation for excellence and innovation in the industry. I would be honored to contribute to your continued success and growth.
+
+I would welcome the opportunity to discuss how my background and skills would benefit your team. Thank you for considering my application. I look forward to hearing from you.
+
+Best regards,
+[Your Name]
+
+Date: ${today}`;
+
+            document.getElementById('coverResultText').textContent = coverLetter;
+            document.getElementById('coverResult').classList.add('show');
+        }
+
+        // Proposal Form
+        function generateProposal() {
+            const clientName = document.getElementById('proposalClientName').value;
+            const jobTitle = document.getElementById('proposalJobTitle').value;
+            const details = document.getElementById('proposalDetails').value;
+
+            if (!clientName || !jobTitle) {
+                alert
