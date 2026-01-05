@@ -3,461 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI - AI-Powered Assistant</title>
+    <title>DefyBot AI | Gemini Powered</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg-light: #f9fafb;
+            --border: #e5e7eb;
+            --text-main: #1f2937;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-            background: #f7f7f8;
-            min-height: 100vh;
-            color: #2c2d30;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
 
-        /* Login Page */
-        .login-container {
+        /* Login Screen */
+        #loginPage {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
-            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .login-box {
+        .login-card {
             background: white;
-            border-radius: 16px;
-            padding: 48px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-logo {
+            max-width: 400px;
             text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .login-logo-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 16px;
-        }
-
-        .login-logo h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #2c2d30;
-        }
-
-        .login-form {
-            margin-top: 32px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #e5e5e5;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-        }
-
-        .login-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .error-message {
-            color: #dc2626;
-            font-size: 14px;
-            margin-top: 12px;
-            text-align: center;
-            display: none;
         }
 
         /* App Layout */
-        .app-container {
-            display: none;
-            height: 100vh;
-            overflow: hidden;
-        }
-
+        #appContainer { display: none; height: 100vh; background: var(--bg-light); }
+        
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
             width: 260px;
-            background: #f5f5f5;
-            border-right: 1px solid #e5e5e5;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            padding: 16px;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .sidebar-content {
-            flex: 1;
-            padding: 16px 8px;
-        }
-
-        .sidebar-btn {
-            width: 100%;
-            padding: 12px 16px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            text-align: left;
-            cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 4px;
-        }
-
-        .sidebar-btn.active, .sidebar-btn:hover {
-            background: #e5e5e5;
-        }
-
-        .main-content {
-            margin-left: 260px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
             background: white;
-            border-bottom: 1px solid #e5e5e5;
-            padding: 12px 24px;
+            border-right: 1px solid var(--border);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            padding: 20px;
         }
 
-        .content-area {
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Chat UI */
+        .chat-area {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .messages-container {
             flex: 1;
             overflow-y: auto;
-            display: none;
-            padding: 40px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .content-area.active {
-            display: block;
-        }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 15px; line-height: 1.5; }
+        .ai-msg { background: white; align-self: flex-start; border: 1px solid var(--border); }
+        .user-msg { background: var(--primary); color: white; align-self: flex-end; }
 
-        /* Forms & Cards */
-        .tool-selection {
-            text-align: center;
-        }
-
-        .mode-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            max-width: 800px;
-            margin: 40px auto;
-        }
-
-        .mode-card {
+        /* Input Area */
+        .input-box {
             background: white;
-            border: 2px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 30px;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            outline: none;
+        }
+
+        button.send-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: 0.3s;
         }
 
-        .mode-card:hover {
-            border-color: #667eea;
-            transform: translateY(-5px);
-        }
-
-        .form-container {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
-        .form-input { 
-            width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 8px; 
-            font-size: 15px; font-family: inherit;
-        }
-        .form-textarea { min-height: 150px; resize: vertical; }
-
-        .result-box {
-            margin-top: 30px;
-            padding: 24px;
-            background: #fff;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            display: none;
-        }
-
-        .result-box.show { display: block; }
-        .result-text { white-space: pre-wrap; line-height: 1.6; color: #333; }
-
-        .copy-btn {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            float: right;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 100%; position: relative; height: auto; }
-            .main-content { margin-left: 0; }
-        }
+        /* Utility Classes */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="login-container" id="loginPage">
-        <div class="login-box">
-            <div class="login-logo">
-                <div class="login-logo-icon">🤖</div>
-                <h1>DefyBot AI</h1>
-                <p>Enter password to continue</p>
-            </div>
-            <div class="login-form">
-                <input type="password" class="login-input" id="passwordInput" placeholder="Password: mujtaba" onkeypress="handleKey(event)">
-                <button class="login-btn" onclick="handleLogin()">Access DefyBot AI</button>
-                <div class="error-message" id="errorMessage">Incorrect password.</div>
-            </div>
+    <div id="loginPage">
+        <div class="login-card">
+            <h2>🤖 DefyBot AI</h2>
+            <p style="margin: 10px 0 25px; color: #666;">Enter Password to access</p>
+            <input type="password" id="passInput" placeholder="Password..." style="margin-bottom: 15px; width: 100%;">
+            <button class="send-btn" onclick="checkAuth()" style="width: 100%;">Unlock</button>
         </div>
     </div>
 
-    <div class="app-container" id="appContainer">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="login-logo-icon" style="width:32px; height:32px; font-size:18px;">🤖</div>
-                <div style="font-weight:700">DefyBot AI</div>
-            </div>
-            <div class="sidebar-content">
-                <button class="sidebar-btn active" onclick="nav('home')">🏠 Home</button>
-                <button class="sidebar-btn" onclick="nav('cover-letter')">📧 Cover Letter</button>
-                <button class="sidebar-btn" onclick="nav('proposal')">📝 Proposal</button>
-            </div>
-        </div>
+    <div id="appContainer" style="display: flex;">
+        <aside class="sidebar">
+            <h3>DefyBot AI</h3>
+            <hr style="margin: 20px 0;">
+            <p style="font-size: 12px; color: #888;">MODES</p>
+            <button onclick="switchMode('chat')" style="margin-top: 10px; padding: 10px; text-align: left; cursor: pointer;">💬 Chat Mode</button>
+            <button onclick="switchMode('tools')" style="margin-top: 5px; padding: 10px; text-align: left; cursor: pointer;">📄 Writing Tools</button>
+        </aside>
 
-        <div class="main-content">
-            <div class="header">
-                <div id="pageTitle">Home</div>
-                <button onclick="logout()" style="background:none; border:none; color:#667eea; cursor:pointer;">Logout</button>
-            </div>
-
-            <div class="content-area active" id="home">
-                <h2 style="font-size:32px; margin-bottom:10px;">Welcome to DefyBot AI</h2>
-                <p>Choose a tool from the sidebar to generate professional documents in seconds.</p>
-            </div>
-
-            <div class="content-area" id="cover-letter">
-                <div class="tool-selection">
-                    <h2>Cover Letter Generator</h2>
-                    <div class="mode-buttons">
-                        <div class="mode-card" onclick="nav('cover-form')">
-                            <div style="font-size:40px">📄</div>
-                            <h3>Form Mode</h3>
-                            <p>Enter details manually</p>
-                        </div>
-                        <div class="mode-card" onclick="alert('Chat Mode coming soon!')">
-                            <div style="font-size:40px">💬</div>
-                            <h3>Chat Mode</h3>
-                            <p>Talk to AI</p>
-                        </div>
-                    </div>
+        <main class="main-content">
+            <section id="chatSection" class="chat-area">
+                <div class="messages-container" id="chatDisplay">
+                    <div class="msg ai-msg">Welcome, Mujtaba. How can I assist with your training or projects today?</div>
                 </div>
-            </div>
-
-            <div class="content-area" id="cover-form">
-                <div class="form-container">
-                    <button onclick="nav('cover-letter')" style="margin-bottom:20px; cursor:pointer;">← Back</button>
-                    <h2>Generate Cover Letter</h2>
-                    <div class="form-group">
-                        <label class="form-label">Company Name</label>
-                        <input type="text" class="form-input" id="coverClientName">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Job Title</label>
-                        <input type="text" class="form-input" id="coverJobTitle">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Job Description / Specific Skills</label>
-                        <textarea class="form-input form-textarea" id="coverJobDesc"></textarea>
-                    </div>
-                    <button class="login-btn" onclick="generateCoverLetter()">Generate</button>
-
-                    <div class="result-box" id="coverResult">
-                        <button class="copy-btn" onclick="copyText('coverResultText')">Copy</button>
-                        <h3>Your Cover Letter:</h3>
-                        <div class="result-text" id="coverResultText"></div>
-                    </div>
+                <div class="input-box">
+                    <input type="text" id="chatInput" placeholder="Message Gemini..." onkeypress="handleEnter(event)">
+                    <button class="send-btn" onclick="sendToGemini()">Send</button>
                 </div>
-            </div>
-
-            <div class="content-area" id="proposal">
-                <div class="tool-selection">
-                    <h2>Proposal Generator</h2>
-                    <div class="mode-buttons">
-                        <div class="mode-card" onclick="nav('proposal-form')">
-                            <div style="font-size:40px">📋</div>
-                            <h3>Form Mode</h3>
-                            <p>Structured Proposal</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-area" id="proposal-form">
-                <div class="form-container">
-                    <button onclick="nav('proposal')" style="margin-bottom:20px; cursor:pointer;">← Back</button>
-                    <h2>Generate Proposal</h2>
-                    <div class="form-group">
-                        <label class="form-label">Client Name</label>
-                        <input type="text" class="form-input" id="proposalClientName">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Project Title</label>
-                        <input type="text" class="form-input" id="proposalJobTitle">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Project Details</label>
-                        <textarea class="form-input form-textarea" id="proposalDetails"></textarea>
-                    </div>
-                    <button class="login-btn" onclick="generateProposal()">Generate</button>
-
-                    <div class="result-box" id="proposalResult">
-                        <button class="copy-btn" onclick="copyText('proposalResultText')">Copy</button>
-                        <h3>Your Proposal:</h3>
-                        <div class="result-text" id="proposalResultText"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+            </section>
+        </main>
     </div>
 
     <script>
-        function handleLogin() {
-            const pass = document.getElementById('passwordInput').value;
-            if(pass.toLowerCase() === 'mujtaba') {
-                document.getElementById('loginPage').style.display = 'none';
+        // CONFIGURATION
+        const WORKER_URL = "YOUR_CLOUDFLARE_WORKER_URL_HERE"; 
+        let history = []; // Stores the session memory
+
+        // AUTHENTICATION
+        function checkAuth() {
+            const pass = document.getElementById('passInput').value;
+            if (pass.toLowerCase() === 'mujtaba') {
+                document.getElementById('loginPage').classList.add('hidden');
                 document.getElementById('appContainer').style.display = 'flex';
             } else {
-                document.getElementById('errorMessage').style.display = 'block';
+                alert("Incorrect Password");
             }
         }
 
-        function handleKey(e) { if(e.key === 'Enter') handleLogin(); }
-        function logout() { location.reload(); }
+        // CHAT LOGIC
+        async function sendToGemini() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
 
-        function nav(id) {
-            document.querySelectorAll('.content-area').forEach(a => a.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            // Sidebar active state
-            document.querySelectorAll('.sidebar-btn').forEach(b => {
-                b.classList.remove('active');
-                if(b.innerText.toLowerCase().includes(id.split('-')[0])) b.classList.add('active');
-            });
+            // Update UI
+            appendMsg(message, 'user-msg');
+            input.value = '';
+
+            // Update History
+            history.push({ role: "user", parts: [{ text: message }] });
+
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: history })
+                });
+
+                const data = await response.json();
+                const aiResponse = data.reply;
+
+                appendMsg(aiResponse, 'ai-msg');
+                history.push({ role: "model", parts: [{ text: aiResponse }] });
+
+            } catch (err) {
+                appendMsg("System Error: Could not reach the Cloudflare Worker.", 'ai-msg');
+            }
         }
 
-        function generateCoverLetter() {
-            const client = document.getElementById('coverClientName').value;
-            const job = document.getElementById('coverJobTitle').value;
-            const desc = document.getElementById('coverJobDesc').value;
-            const today = new Date().toLocaleDateString();
-
-            if(!client || !job) return alert("Fill in Company and Job Title");
-
-            const text = `Dear Hiring Manager at ${client},
-
-I am writing to express my strong interest in the ${job} position. After reviewing the requirements, I am confident that my background makes me an excellent fit for your team.
-
-${desc ? `I was particularly excited to see the focus on: ${desc.substring(0, 150)}... My experience aligns perfectly with these needs.` : "I have a proven track record of delivering high-quality work and am eager to contribute to your company's growth."}
-
-Thank you for your time and consideration.
-
-Best regards,
-[Your Name]
-Date: ${today}`;
-
-            document.getElementById('coverResultText').innerText = text;
-            document.getElementById('coverResult').classList.add('show');
+        function appendMsg(text, type) {
+            const container = document.getElementById('chatDisplay');
+            const div = document.createElement('div');
+            div.className = `msg ${type}`;
+            div.innerText = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         }
 
-        function generateProposal() {
-            const client = document.getElementById('proposalClientName').value;
-            const title = document.getElementById('proposalJobTitle').value;
-            const details = document.getElementById('proposalDetails').value;
-            const today = new Date().toLocaleDateString();
-
-            if(!client || !title) return alert("Fill in Client and Project Title");
-
-            const text = `BUSINESS PROPOSAL: ${title}
-Prepared for: ${client}
-Date: ${today}
-
-EXECUTIVE SUMMARY
-We propose a comprehensive solution for ${title} tailored to meet ${client}'s objectives.
-
-PROJECT SCOPE
-${details ? details : "We will deliver the project according to the highest industry standards with a focus on efficiency and excellence."}
-
-Best regards,
-[Your Company]`;
-
-            document.getElementById('proposalResultText').innerText = text;
-            document.getElementById('proposalResult').classList.add('show');
-        }
-
-        function copyText(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
-        }
+        function handleEnter(e) { if (e.key === 'Enter') sendToGemini(); }
     </script>
 </body>
 </html>
