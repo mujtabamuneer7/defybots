@@ -3,28 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Auto-Link</title>
+    <title>DefyBot AI | Mujtaba</title>
     <style>
         :root { --primary: #4f46e5; --bg: #f8fafc; --sidebar: #1e293b; --border: #e2e8f0; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
 
-        /* Sidebar */
+        /* Sidebar & Logo Area */
         .sidebar { width: 260px; background: var(--sidebar); color: white; padding: 25px; display: flex; flex-direction: column; gap: 10px; }
-        .sidebar h2 { margin-bottom: 20px; letter-spacing: 1px; font-size: 22px; color: #fff; }
+        
+        .logo-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 30px;
+        }
+        
+        .logo-container img { 
+            width: 45px; 
+            height: 45px; 
+            object-fit: contain; 
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1); /* Optional: subtle background for the logo */
+            padding: 5px;
+        }
+
+        .sidebar h2 { letter-spacing: 1px; font-size: 20px; color: #fff; }
+        
         .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px; text-align: left; cursor: pointer; border-radius: 8px; font-weight: 600; transition: 0.2s; }
         .nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
         .nav-btn.active { background: var(--primary); color: white; }
 
-        /* Status Badge */
         #connectionStatus { font-size: 11px; margin-top: auto; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; text-align: center; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* Main */
+        /* Main Area */
         .main { flex: 1; display: flex; flex-direction: column; }
         .page { display: none; height: 100%; flex-direction: column; padding: 20px; }
         .page.active { display: flex; }
 
-        /* Chat */
         #chatDisplay { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
         .ai { background: white; align-self: flex-start; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -40,7 +56,11 @@
 <body>
 
     <nav class="sidebar">
-        <h2>DEFYBOT</h2>
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
+            <h2>DEFYBOT</h2>
+        </div>
+
         <button class="nav-btn active" onclick="show('chatPage', this)">💬 Chat Mode</button>
         <button class="nav-btn" onclick="show('propPage', this)">📄 Proposal Gen</button>
         <div id="connectionStatus">Initializing...</div>
@@ -49,7 +69,7 @@
     <main class="main">
         <section id="chatPage" class="page active">
             <div id="chatDisplay">
-                <div class="msg ai">Hello Mujtaba. I am auto-detecting the best available model for your account...</div>
+                <div class="msg ai">Hello Mujtaba! Logo updated. Ready to assist.</div>
             </div>
             <div class="input-bar">
                 <input type="text" id="userInput" placeholder="Ask Gemini..." onkeypress="if(event.key==='Enter') send()">
@@ -71,7 +91,7 @@
     <script>
         const API_KEY = "AIzaSyDAl7mknM1IidGe6MtIW1ibTgB7wXHFIIE";
         let history = [];
-        let ACTIVE_MODEL = null; // Will be set automatically
+        let ACTIVE_MODEL = null;
 
         function show(id, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -80,88 +100,40 @@
             btn.classList.add('active');
         }
 
-        // --- THE AUTO-DISCOVERY FUNCTION ---
         async function findActiveModel() {
             const statusDiv = document.getElementById('connectionStatus');
-            statusDiv.innerText = "🔍 Scanning Models...";
-            
             try {
-                // 1. Ask Google: "What models do I have?"
                 const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`;
                 const response = await fetch(listUrl);
                 const data = await response.json();
-
-                if (data.error) throw new Error(data.error.message);
-
-                // 2. Filter for models that can "generateContent"
-                const validModel = data.models?.find(m => 
-                    m.supportedGenerationMethods && 
-                    m.supportedGenerationMethods.includes("generateContent") &&
-                    (m.name.includes("flash") || m.name.includes("pro")) // Prefer Flash/Pro
-                );
-
+                const validModel = data.models?.find(m => m.supportedGenerationMethods.includes("generateContent"));
                 if (validModel) {
-                    // 3. Save the exact name Google wants us to use (e.g. models/gemini-1.5-flash-001)
                     ACTIVE_MODEL = validModel.name; 
-                    statusDiv.innerText = `🟢 Linked: ${validModel.displayName || ACTIVE_MODEL.split('/').pop()}`;
-                    statusDiv.style.color = "#86efac";
-                    statusDiv.style.borderColor = "#86efac";
+                    statusDiv.innerText = `🟢 Linked: ${ACTIVE_MODEL.split('/').pop()}`;
                     return true;
-                } else {
-                    // If no specific Flash/Pro found, take ANY valid generation model
-                    const anyModel = data.models?.find(m => m.supportedGenerationMethods.includes("generateContent"));
-                    if(anyModel) {
-                        ACTIVE_MODEL = anyModel.name;
-                        statusDiv.innerText = `🟡 Linked: ${anyModel.name.split('/').pop()}`;
-                        return true;
-                    }
                 }
-                throw new Error("No usable models found in project.");
-
             } catch (err) {
-                console.error(err);
-                statusDiv.innerText = "🔴 API Access Denied";
-                statusDiv.style.color = "#fca5a5";
-                statusDiv.style.borderColor = "#fca5a5";
+                statusDiv.innerText = "🔴 API Denied";
                 return false;
             }
         }
 
-        // Initialize on Load
         findActiveModel();
 
         async function callGemini(prompt, isChat = true) {
-            // Ensure we have a model before calling
-            if (!ACTIVE_MODEL) {
-                const success = await findActiveModel();
-                if (!success) return "❌ Error: Could not find a working model for your API Key. Check Google Cloud Console.";
-            }
-
-            // Use the discovered model name
+            if (!ACTIVE_MODEL) await findActiveModel();
             const url = `https://generativelanguage.googleapis.com/v1beta/${ACTIVE_MODEL}:generateContent?key=${API_KEY}`;
-            
-            const requestBody = {
-                contents: isChat ? [...history, { role: "user", parts: [{ text: prompt }] }] : [{ role: "user", parts: [{ text: prompt }] }]
-            };
-
+            const requestBody = { contents: isChat ? [...history, { role: "user", parts: [{ text: prompt }] }] : [{ role: "user", parts: [{ text: prompt }] }] };
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
-
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
                 const data = await response.json();
-                
-                if (data.error) return `❌ API Error: ${data.error.message}`;
-
                 const responseText = data.candidates[0].content.parts[0].text;
                 if (isChat) {
                     history.push({ role: "user", parts: [{ text: prompt }] });
                     history.push({ role: "model", parts: [{ text: responseText }] });
                 }
                 return responseText;
-            } catch (err) { return "❌ Network Error"; }
+            } catch (err) { return "❌ Error"; }
         }
 
         async function send() {
