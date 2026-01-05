@@ -7,9 +7,7 @@ export async function onRequestPost({ request, env }) {
       );
     }
 
-    const body = await request.json();
-    const prompt = body.prompt;
-    const history = body.history || [];
+    const { prompt } = await request.json();
 
     if (!prompt) {
       return new Response(
@@ -27,8 +25,10 @@ export async function onRequestPost({ request, env }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         contents: [
-          ...history,
-          { role: "user", parts: [{ text: prompt }] }
+          {
+            role: "user",
+            parts: [{ text: prompt }]
+          }
         ]
       })
     });
@@ -36,16 +36,17 @@ export async function onRequestPost({ request, env }) {
     const data = await response.json();
 
     if (!data.candidates || !data.candidates[0]) {
+      console.error("Gemini raw error:", data);
       return new Response(
-        JSON.stringify({ error: "Invalid Gemini response", raw: data }),
+        JSON.stringify({ error: "Gemini failed to generate response" }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    const reply = data.candidates[0].content.parts[0].text;
-
     return new Response(
-      JSON.stringify({ reply }),
+      JSON.stringify({
+        reply: data.candidates[0].content.parts[0].text
+      }),
       { headers: { "Content-Type": "application/json" } }
     );
 
