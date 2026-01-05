@@ -1,90 +1,177 @@
-<script>
-let history = [];
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DefyBot AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-/* LOGIN */
-function unlock() {
-  const pass = document.getElementById("passCode").value;
-  if (pass.toLowerCase() === "mujtaba") {
-    document.getElementById("loginOverlay").style.display = "none";
-  } else {
-    alert("Access Denied");
-  }
-}
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-/* NAV */
-function switchPage(pageId, btn) {
-  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-  document.getElementById(pageId).classList.remove("hidden");
-
-  document.querySelectorAll(".nav-btn").forEach(b => {
-    b.classList.remove("bg-indigo-50", "text-indigo-700", "font-semibold");
-    b.classList.add("text-slate-600");
-  });
-
-  btn.classList.add("bg-indigo-50", "text-indigo-700", "font-semibold");
-}
-
-/* CHAT */
-async function sendChat() {
-  const input = document.getElementById("userInput");
-  const message = input.value.trim();
-  if (!message) return;
-
-  appendMsg(message, "user");
-  input.value = "";
-
-  const loadingId = "loading-" + Date.now();
-  appendMsg("Thinking…", "ai", loadingId);
-
-  const reply = await callAI(message);
-  document.getElementById(loadingId).innerText = reply;
-}
-
-/* API CALL */
-async function callAI(prompt) {
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, history })
-    });
-
-    const data = await res.json();
-
-    if (data.error) {
-      return "❌ " + data.error;
+  <style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
     }
+  </style>
+</head>
 
-    history.push(
-      { role: "user", parts: [{ text: prompt }] },
-      { role: "model", parts: [{ text: data.reply }] }
-    );
+<body class="bg-slate-50 text-slate-900 h-screen flex overflow-hidden">
 
-    return data.reply;
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay" class="fixed inset-0 bg-indigo-600 flex items-center justify-center z-50">
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm text-center">
+    <h2 class="text-2xl font-bold text-indigo-600 mb-4">🤖 DefyBot AI</h2>
+    <input id="passCode" type="password" placeholder="Password"
+      class="w-full p-3 border rounded-xl outline-none mb-4">
+    <button id="loginBtn"
+      class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">
+      Access Bot
+    </button>
+  </div>
+</div>
 
-  } catch (err) {
-    return "❌ Network error";
+<!-- SIDEBAR -->
+<aside class="w-64 bg-white border-r p-4 hidden md:flex flex-col">
+  <div class="text-xl font-black text-indigo-600 mb-6">DefyBot AI</div>
+
+  <button id="chatTab"
+    class="nav-btn p-3 rounded-xl bg-indigo-50 text-indigo-700 font-semibold mb-2">
+    💬 Chat
+  </button>
+
+  <button id="proposalTab"
+    class="nav-btn p-3 rounded-xl text-slate-600 hover:bg-slate-100">
+    📄 Proposal
+  </button>
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 flex flex-col h-full">
+
+  <!-- CHAT PAGE -->
+  <section id="chatPage" class="page flex flex-col h-full p-4">
+    <div id="chatWindow"
+      class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+
+      <div class="bg-white border p-4 rounded-2xl shadow-sm max-w-[80%]">
+        Welcome! Ask me anything.
+      </div>
+
+    </div>
+
+    <div class="mt-4 bg-white border rounded-2xl p-2 flex gap-2">
+      <input id="userInput" type="text" placeholder="Ask something..."
+        class="flex-1 p-3 outline-none">
+      <button id="sendBtn"
+        class="bg-indigo-600 text-white px-5 rounded-xl font-bold">
+        Send
+      </button>
+    </div>
+  </section>
+
+  <!-- PROPOSAL PAGE -->
+  <section id="proposalPage" class="page hidden p-6">
+    <div class="max-w-xl bg-white p-6 rounded-2xl border">
+      <h2 class="text-xl font-bold mb-4">Proposal Generator</h2>
+
+      <input id="clientName" placeholder="Client Name"
+        class="w-full p-3 border rounded-xl mb-3">
+
+      <textarea id="projectGoals" rows="4"
+        placeholder="Project details"
+        class="w-full p-3 border rounded-xl mb-3"></textarea>
+
+      <button id="generateBtn"
+        class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">
+        Generate
+      </button>
+
+      <pre id="toolResult"
+        class="hidden mt-4 bg-slate-100 p-4 rounded-xl text-sm whitespace-pre-wrap"></pre>
+    </div>
+  </section>
+
+</main>
+
+<!-- SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  let history = [];
+
+  /* LOGIN */
+  document.getElementById("loginBtn").onclick = () => {
+    const pass = document.getElementById("passCode").value.toLowerCase();
+    if (pass === "mujtaba") {
+      document.getElementById("loginOverlay").style.display = "none";
+    } else {
+      alert("Wrong password");
+    }
+  };
+
+  /* NAV */
+  const chatPage = document.getElementById("chatPage");
+  const proposalPage = document.getElementById("proposalPage");
+
+  document.getElementById("chatTab").onclick = () => {
+    chatPage.classList.remove("hidden");
+    proposalPage.classList.add("hidden");
+  };
+
+  document.getElementById("proposalTab").onclick = () => {
+    proposalPage.classList.remove("hidden");
+    chatPage.classList.add("hidden");
+  };
+
+  /* CHAT */
+  document.getElementById("sendBtn").onclick = sendChat;
+
+  async function sendChat() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    addBubble(msg, true);
+    input.value = "";
+
+    const loading = addBubble("Thinking…", false);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: msg, history })
+      });
+
+      const data = await res.json();
+      loading.innerText = data.reply || data.error || "Error";
+
+      history.push(
+        { role: "user", parts: [{ text: msg }] },
+        { role: "model", parts: [{ text: loading.innerText }] }
+      );
+
+    } catch {
+      loading.innerText = "Network error";
+    }
   }
-}
 
-/* UI MESSAGE */
-function appendMsg(text, sender, id = null) {
-  const win = document.getElementById("chat-window");
+  function addBubble(text, isUser) {
+    const div = document.createElement("div");
+    div.className = isUser
+      ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none max-w-[80%] ml-auto"
+      : "bg-white border p-3 rounded-2xl rounded-bl-none max-w-[80%]";
 
-  const wrap = document.createElement("div");
-  wrap.className = sender === "user" ? "flex justify-end" : "flex justify-start";
+    div.innerText = text;
+    document.getElementById("chatWindow").appendChild(div);
+    return div;
+  }
 
-  const bubble = document.createElement("div");
-  bubble.className =
-    sender === "user"
-      ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none max-w-[85%] text-sm"
-      : "bg-white border p-3 rounded-2xl rounded-bl-none max-w-[85%] text-sm";
-
-  if (id) bubble.id = id;
-  bubble.innerText = text;
-
-  wrap.appendChild(bubble);
-  win.appendChild(wrap);
-  win.scrollTop = win.scrollHeight;
-}
+});
 </script>
+
+</body>
+</html>
+
