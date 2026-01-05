@@ -39,14 +39,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-logo {
@@ -70,12 +64,6 @@
             font-size: 28px;
             font-weight: 700;
             color: #2c2d30;
-        }
-
-        .login-logo p {
-            color: #6e6e80;
-            font-size: 14px;
-            margin-top: 8px;
         }
 
         .login-form {
@@ -110,11 +98,6 @@
             transition: all 0.3s ease;
         }
 
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
         .error-message {
             color: #dc2626;
             font-size: 14px;
@@ -123,14 +106,13 @@
             display: none;
         }
 
-        /* Main App Container */
+        /* App Layout */
         .app-container {
             display: none;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 0;
@@ -152,26 +134,8 @@
             gap: 12px;
         }
 
-        .sidebar-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .sidebar-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c2d30;
-        }
-
         .sidebar-content {
             flex: 1;
-            overflow-y: auto;
             padding: 16px 8px;
         }
 
@@ -184,24 +148,16 @@
             text-align: left;
             cursor: pointer;
             font-size: 14px;
-            color: #2c2d30;
-            transition: all 0.2s ease;
-            margin-bottom: 4px;
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 4px;
         }
 
-        .sidebar-btn:hover {
+        .sidebar-btn.active, .sidebar-btn:hover {
             background: #e5e5e5;
         }
 
-        .sidebar-btn.active {
-            background: #e5e5e5;
-            font-weight: 600;
-        }
-
-        /* Main Content */
         .main-content {
             margin-left: 260px;
             height: 100vh;
@@ -209,416 +165,96 @@
             flex-direction: column;
         }
 
-        /* Header */
         .header {
             background: white;
             border-bottom: 1px solid #e5e5e5;
             padding: 12px 24px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
         }
 
-        .header-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #2c2d30;
-        }
-
-        .logout-btn {
-            padding: 8px 16px;
-            background: #f5f5f5;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #2c2d30;
-            transition: all 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: #e5e5e5;
-        }
-
-        /* Content Area */
         .content-area {
             flex: 1;
             overflow-y: auto;
             display: none;
+            padding: 40px;
         }
 
         .content-area.active {
-            display: flex;
-            flex-direction: column;
+            display: block;
         }
 
-        /* Welcome Screen */
-        .welcome-screen {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .welcome-icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-        }
-
-        .welcome-screen h2 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #2c2d30;
-            margin-bottom: 12px;
-        }
-
-        .welcome-screen p {
-            font-size: 16px;
-            color: #6e6e80;
-            max-width: 600px;
-        }
-
-        /* Tool Selection Page */
+        /* Forms & Cards */
         .tool-selection {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 40px;
-        }
-
-        .tool-selection-header {
             text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .tool-selection-header h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #2c2d30;
-            margin-bottom: 8px;
-        }
-
-        .tool-selection-header p {
-            color: #6e6e80;
-            font-size: 16px;
         }
 
         .mode-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 40px auto;
         }
 
         .mode-card {
             background: white;
             border: 2px solid #e5e5e5;
             border-radius: 12px;
-            padding: 32px;
+            padding: 30px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
+            transition: 0.3s;
         }
 
         .mode-card:hover {
             border-color: #667eea;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+            transform: translateY(-5px);
         }
 
-        .mode-card-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .mode-card h3 {
-            font-size: 20px;
-            font-weight: 600;
-            color: #2c2d30;
-            margin-bottom: 8px;
-        }
-
-        .mode-card p {
-            color: #6e6e80;
-            font-size: 14px;
-        }
-
-        /* Form Mode */
         .form-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 40px;
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
-            width: 100%;
         }
 
-        .form-header {
-            margin-bottom: 32px;
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        .form-input { 
+            width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 8px; 
+            font-size: 15px; font-family: inherit;
         }
-
-        .form-header h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2c2d30;
-            margin-bottom: 8px;
-        }
-
-        .form-header p {
-            color: #6e6e80;
-            font-size: 14px;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #f5f5f5;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #2c2d30;
-            margin-bottom: 24px;
-            transition: all 0.2s ease;
-        }
-
-        .back-btn:hover {
-            background: #e5e5e5;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            color: #2c2d30;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d1d1d6;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            background: white;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
+        .form-textarea { min-height: 150px; resize: vertical; }
 
         .result-box {
-            margin-top: 32px;
+            margin-top: 30px;
             padding: 24px;
-            background: white;
+            background: #fff;
             border: 1px solid #e5e5e5;
             border-radius: 12px;
             display: none;
         }
 
-        .result-box.show {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
+        .result-box.show { display: block; }
+        .result-text { white-space: pre-wrap; line-height: 1.6; color: #333; }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .result-box h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c2d30;
-            margin-bottom: 16px;
-        }
-
-        .result-text {
-            color: #2c2d30;
-            line-height: 1.7;
-            white-space: pre-wrap;
-        }
-
-        /* Chat Mode */
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: white;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 32px 24px;
-            max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .chat-message {
-            margin-bottom: 24px;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chat-message.user {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .chat-message.assistant {
-            display: flex;
-            justify-content: flex-start;
-        }
-
-        .message-content {
-            max-width: 80%;
-            padding: 16px 20px;
-            border-radius: 18px;
-            line-height: 1.6;
-        }
-
-        .chat-message.user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-message.assistant .message-content {
-            background: #f5f5f5;
-            color: #2c2d30;
-            border-bottom-left-radius: 4px;
-        }
-
-        .chat-input-container {
-            border-top: 1px solid #e5e5e5;
-            padding: 20px 24px;
-            background: white;
-            max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .chat-input-wrapper {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 1px solid #d1d1d6;
-            border-radius: 20px;
-            font-size: 15px;
-            resize: none;
-            max-height: 150px;
-            font-family: inherit;
-            line-height: 1.5;
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .chat-send-btn {
-            padding: 14px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 600;
+        .copy-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .chat-send-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .chat-send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+            font-size: 12px;
+            float: right;
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .message-content {
-                max-width: 90%;
-            }
+            .sidebar { width: 100%; position: relative; height: auto; }
+            .main-content { margin-left: 0; }
         }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
+
     <div class="login-container" id="loginPage">
         <div class="login-box">
             <div class="login-logo">
@@ -627,474 +263,201 @@
                 <p>Enter password to continue</p>
             </div>
             <div class="login-form">
-                <input 
-                    type="password" 
-                    class="login-input" 
-                    id="passwordInput" 
-                    placeholder="Enter password"
-                    onkeypress="handleLoginKeypress(event)"
-                >
+                <input type="password" class="login-input" id="passwordInput" placeholder="Password: mujtaba" onkeypress="handleKey(event)">
                 <button class="login-btn" onclick="handleLogin()">Access DefyBot AI</button>
-                <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
+                <div class="error-message" id="errorMessage">Incorrect password.</div>
             </div>
         </div>
     </div>
 
-    <!-- Main App -->
     <div class="app-container" id="appContainer">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">🤖</div>
-                <div class="sidebar-title">DefyBot AI</div>
+                <div class="login-logo-icon" style="width:32px; height:32px; font-size:18px;">🤖</div>
+                <div style="font-weight:700">DefyBot AI</div>
             </div>
             <div class="sidebar-content">
-                <button class="sidebar-btn active" onclick="navigateTo('home')">
-                    <span>🏠</span>
-                    <span>Home</span>
-                </button>
-                <button class="sidebar-btn" onclick="navigateTo('cover-letter')">
-                    <span>📧</span>
-                    <span>Cover Letter Generator</span>
-                </button>
-                <button class="sidebar-btn" onclick="navigateTo('proposal')">
-                    <span>📝</span>
-                    <span>Proposal Generator</span>
-                </button>
+                <button class="sidebar-btn active" onclick="nav('home')">🏠 Home</button>
+                <button class="sidebar-btn" onclick="nav('cover-letter')">📧 Cover Letter</button>
+                <button class="sidebar-btn" onclick="nav('proposal')">📝 Proposal</button>
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <div class="header-title">DefyBot AI</div>
-                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                <div id="pageTitle">Home</div>
+                <button onclick="logout()" style="background:none; border:none; color:#667eea; cursor:pointer;">Logout</button>
             </div>
 
-            <!-- Home/Welcome -->
             <div class="content-area active" id="home">
-                <div class="welcome-screen">
-                    <div class="welcome-icon">🤖</div>
-                    <h2>Welcome to DefyBot AI</h2>
-                    <p>Your intelligent AI assistant for generating professional cover letters and proposals. Select a tool from the sidebar to get started.</p>
-                </div>
+                <h2 style="font-size:32px; margin-bottom:10px;">Welcome to DefyBot AI</h2>
+                <p>Choose a tool from the sidebar to generate professional documents in seconds.</p>
             </div>
 
-            <!-- Cover Letter Tool Selection -->
             <div class="content-area" id="cover-letter">
                 <div class="tool-selection">
-                    <div class="tool-selection-header">
-                        <h2>Cover Letter Generator</h2>
-                        <p>Choose how you'd like to create your cover letter</p>
-                    </div>
+                    <h2>Cover Letter Generator</h2>
                     <div class="mode-buttons">
-                        <div class="mode-card" onclick="showMode('cover-form')">
-                            <div class="mode-card-icon">📝</div>
+                        <div class="mode-card" onclick="nav('cover-form')">
+                            <div style="font-size:40px">📄</div>
                             <h3>Form Mode</h3>
-                            <p>Fill out a structured form with specific fields</p>
+                            <p>Enter details manually</p>
                         </div>
-                        <div class="mode-card" onclick="showMode('cover-chat')">
-                            <div class="mode-card-icon">💬</div>
+                        <div class="mode-card" onclick="alert('Chat Mode coming soon!')">
+                            <div style="font-size:40px">💬</div>
                             <h3>Chat Mode</h3>
-                            <p>Have a conversation with AI to create your letter</p>
+                            <p>Talk to AI</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Cover Letter Form Mode -->
             <div class="content-area" id="cover-form">
                 <div class="form-container">
-                    <button class="back-btn" onclick="navigateTo('cover-letter')">
-                        ← Back to options
-                    </button>
-                    <div class="form-header">
-                        <h2>Cover Letter - Form Mode</h2>
-                        <p>Fill in the details below to generate your cover letter</p>
-                    </div>
-                    
+                    <button onclick="nav('cover-letter')" style="margin-bottom:20px; cursor:pointer;">← Back</button>
+                    <h2>Generate Cover Letter</h2>
                     <div class="form-group">
-                        <label class="form-label">Client Name</label>
-                        <input type="text" class="form-input" id="coverClientName" placeholder="e.g., John Smith or ABC Corporation">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" class="form-input" id="coverClientName">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Job Title/Position</label>
-                        <input type="text" class="form-input" id="coverJobTitle" placeholder="e.g., Senior Software Engineer">
+                        <label class="form-label">Job Title</label>
+                        <input type="text" class="form-input" id="coverJobTitle">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Job Description/Requirements</label>
-                        <textarea class="form-input form-textarea" id="coverJobDesc" placeholder="Paste the job description or key requirements here..."></textarea>
+                        <label class="form-label">Job Description / Specific Skills</label>
+                        <textarea class="form-input form-textarea" id="coverJobDesc"></textarea>
                     </div>
-
-                    <button class="submit-btn" onclick="generateCoverLetter()">Generate Cover Letter</button>
+                    <button class="login-btn" onclick="generateCoverLetter()">Generate</button>
 
                     <div class="result-box" id="coverResult">
-                        <h3>Your Generated Cover Letter:</h3>
+                        <button class="copy-btn" onclick="copyText('coverResultText')">Copy</button>
+                        <h3>Your Cover Letter:</h3>
                         <div class="result-text" id="coverResultText"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Cover Letter Chat Mode -->
-            <div class="content-area" id="cover-chat">
-                <button class="back-btn" onclick="navigateTo('cover-letter')" style="margin: 16px 24px;">
-                    ← Back to options
-                </button>
-                <div class="chat-container">
-                    <div class="chat-messages" id="coverChatMessages">
-                        <div class="chat-message assistant">
-                            <div class="message-content">
-                                Hi! I'm here to help you create a professional cover letter. Tell me about the position you're applying for, and I'll guide you through the process. What job are you interested in?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input-container">
-                        <div class="chat-input-wrapper">
-                            <textarea 
-                                class="chat-input" 
-                                id="coverChatInput" 
-                                placeholder="Type your message..."
-                                rows="1"
-                                onkeypress="handleChatKeypress(event, 'cover')"
-                            ></textarea>
-                            <button class="chat-send-btn" onclick="sendChatMessage('cover')">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Proposal Tool Selection -->
             <div class="content-area" id="proposal">
                 <div class="tool-selection">
-                    <div class="tool-selection-header">
-                        <h2>Proposal Generator</h2>
-                        <p>Choose how you'd like to create your proposal</p>
-                    </div>
+                    <h2>Proposal Generator</h2>
                     <div class="mode-buttons">
-                        <div class="mode-card" onclick="showMode('proposal-form')">
-                            <div class="mode-card-icon">📝</div>
+                        <div class="mode-card" onclick="nav('proposal-form')">
+                            <div style="font-size:40px">📋</div>
                             <h3>Form Mode</h3>
-                            <p>Fill out a structured form with specific fields</p>
-                        </div>
-                        <div class="mode-card" onclick="showMode('proposal-chat')">
-                            <div class="mode-card-icon">💬</div>
-                            <h3>Chat Mode</h3>
-                            <p>Have a conversation with AI to create your proposal</p>
+                            <p>Structured Proposal</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Proposal Form Mode -->
             <div class="content-area" id="proposal-form">
                 <div class="form-container">
-                    <button class="back-btn" onclick="navigateTo('proposal')">
-                        ← Back to options
-                    </button>
-                    <div class="form-header">
-                        <h2>Proposal - Form Mode</h2>
-                        <p>Fill in the details below to generate your proposal</p>
-                    </div>
-                    
+                    <button onclick="nav('proposal')" style="margin-bottom:20px; cursor:pointer;">← Back</button>
+                    <h2>Generate Proposal</h2>
                     <div class="form-group">
                         <label class="form-label">Client Name</label>
-                        <input type="text" class="form-input" id="proposalClientName" placeholder="e.g., ABC Corporation">
+                        <input type="text" class="form-input" id="proposalClientName">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Job/Project Title</label>
-                        <input type="text" class="form-input" id="proposalJobTitle" placeholder="e.g., Website Redesign Project">
+                        <label class="form-label">Project Title</label>
+                        <input type="text" class="form-input" id="proposalJobTitle">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Proposal Details</label>
-                        <textarea class="form-input form-textarea" id="proposalDetails" placeholder="Describe the project scope, deliverables, timeline, and any other important details..."></textarea>
+                        <label class="form-label">Project Details</label>
+                        <textarea class="form-input form-textarea" id="proposalDetails"></textarea>
                     </div>
-
-                    <button class="submit-btn" onclick="generateProposal()">Generate Proposal</button>
+                    <button class="login-btn" onclick="generateProposal()">Generate</button>
 
                     <div class="result-box" id="proposalResult">
-                        <h3>Your Generated Proposal:</h3>
+                        <button class="copy-btn" onclick="copyText('proposalResultText')">Copy</button>
+                        <h3>Your Proposal:</h3>
                         <div class="result-text" id="proposalResultText"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Proposal Chat Mode -->
-            <div class="content-area" id="proposal-chat">
-                <button class="back-btn" onclick="navigateTo('proposal')" style="margin: 16px 24px;">
-                    ← Back to options
-                </button>
-                <div class="chat-container">
-                    <div class="chat-messages" id="proposalChatMessages">
-                        <div class="chat-message assistant">
-                            <div class="message-content">
-                                Hello! I'm ready to help you create a compelling business proposal. Let's start by discussing the project. What type of proposal are you looking to create?
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input-container">
-                        <div class="chat-input-wrapper">
-                            <textarea 
-                                class="chat-input" 
-                                id="proposalChatInput" 
-                                placeholder="Type your message..."
-                                rows="1"
-                                onkeypress="handleChatKeypress(event, 'proposal')"
-                            ></textarea>
-                            <button class="chat-send-btn" onclick="sendChatMessage('proposal')">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        // Login functionality
         function handleLogin() {
-            const password = document.getElementById('passwordInput').value;
-            const errorMsg = document.getElementById('errorMessage');
-            
-            if (password.toLowerCase() === 'mujtaba') {
+            const pass = document.getElementById('passwordInput').value;
+            if(pass.toLowerCase() === 'mujtaba') {
                 document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('appContainer').style.display = 'block';
-                errorMsg.style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
             } else {
-                errorMsg.style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'block';
             }
         }
 
-        function handleLoginKeypress(event) {
-            if (event.key === 'Enter') {
-                handleLogin();
-            }
-        }
+        function handleKey(e) { if(e.key === 'Enter') handleLogin(); }
+        function logout() { location.reload(); }
 
-        function handleLogout() {
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('appContainer').style.display = 'none';
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('errorMessage').style.display = 'none';
-        }
-
-        // Navigation
-        function navigateTo(page) {
-            // Remove active class from all sidebar buttons
-            document.querySelectorAll('.sidebar-btn').forEach(btn => {
-                btn.classList.remove('active');
+        function nav(id) {
+            document.querySelectorAll('.content-area').forEach(a => a.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Sidebar active state
+            document.querySelectorAll('.sidebar-btn').forEach(b => {
+                b.classList.remove('active');
+                if(b.innerText.toLowerCase().includes(id.split('-')[0])) b.classList.add('active');
             });
-
-            // Add active class to clicked button
-            event.target.closest('.sidebar-btn').classList.add('active');
-
-            // Hide all content areas
-            document.querySelectorAll('.content-area').forEach(area => {
-                area.classList.remove('active');
-            });
-
-            // Show selected content area
-            document.getElementById(page).classList.add('active');
         }
 
-        function showMode(modeId) {
-            document.querySelectorAll('.content-area').forEach(area => {
-                area.classList.remove('active');
-            });
-            document.getElementById(modeId).classList.add('active');
-        }
-
-        // Cover Letter Form
         function generateCoverLetter() {
-            const clientName = document.getElementById('coverClientName').value;
-            const jobTitle = document.getElementById('coverJobTitle').value;
-            const jobDesc = document.getElementById('coverJobDesc').value;
+            const client = document.getElementById('coverClientName').value;
+            const job = document.getElementById('coverJobTitle').value;
+            const desc = document.getElementById('coverJobDesc').value;
+            const today = new Date().toLocaleDateString();
 
-            if (!clientName || !jobTitle) {
-                alert('Please fill in at least Client Name and Job Title');
-                return;
-            }
+            if(!client || !job) return alert("Fill in Company and Job Title");
 
-            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const text = `Dear Hiring Manager at ${client},
 
-            const proposal = `BUSINESS PROPOSAL
+I am writing to express my strong interest in the ${job} position. After reviewing the requirements, I am confident that my background makes me an excellent fit for your team.
 
-To: ${clientName}
-Date: ${today}
-Project: ${jobTitle}
+${desc ? `I was particularly excited to see the focus on: ${desc.substring(0, 150)}... My experience aligns perfectly with these needs.` : "I have a proven track record of delivering high-quality work and am eager to contribute to your company's growth."}
 
-EXECUTIVE SUMMARY
-
-We are pleased to present this proposal for ${jobTitle}. Our team is committed to delivering exceptional results that exceed your expectations and drive measurable success for your organization.
-
-PROJECT OVERVIEW
-
-${details || 'This project will address your key business objectives with innovative solutions tailored to your specific needs. We will work closely with your team to ensure seamless execution and outstanding results.'}
-
-SCOPE OF WORK
-
-Our comprehensive approach includes:
-• Thorough analysis of your requirements and objectives
-• Strategic planning and project roadmap development
-• Implementation with attention to detail and quality
-• Regular progress updates and transparent communication
-• Post-delivery support and documentation
-
-TIMELINE & DELIVERABLES
-
-We will provide a detailed timeline upon project kickoff, with clear milestones and deliverables at each stage to ensure we stay aligned with your goals and deadlines.
-
-WHY CHOOSE US
-
-• Proven track record of successful project delivery
-• Experienced team of dedicated professionals
-• Client-focused approach with transparent communication
-• Commitment to quality, innovation, and excellence
-
-NEXT STEPS
-
-We look forward to discussing this proposal with you in detail. Please feel free to contact us with any questions or to schedule a meeting at your convenience.
-
-Thank you for considering our proposal. We are excited about the opportunity to partner with ${clientName} and contribute to your success.
-
-Best regards,
-[Your Company Name]`;
-
-            document.getElementById('proposalResultText').textContent = proposal;
-            document.getElementById('proposalResult').classList.add('show');
-        }
-
-        // Chat functionality
-        let coverChatHistory = [];
-        let proposalChatHistory = [];
-
-        function sendChatMessage(type) {
-            const inputId = type === 'cover' ? 'coverChatInput' : 'proposalChatInput';
-            const messagesId = type === 'cover' ? 'coverChatMessages' : 'proposalChatMessages';
-            const input = document.getElementById(inputId);
-            const message = input.value.trim();
-
-            if (!message) return;
-
-            // Add user message to chat
-            const messagesContainer = document.getElementById(messagesId);
-            const userMessageDiv = document.createElement('div');
-            userMessageDiv.className = 'chat-message user';
-            userMessageDiv.innerHTML = `<div class="message-content">${escapeHtml(message)}</div>`;
-            messagesContainer.appendChild(userMessageDiv);
-
-            // Clear input
-            input.value = '';
-
-            // Store in history
-            if (type === 'cover') {
-                coverChatHistory.push({ role: 'user', content: message });
-            } else {
-                proposalChatHistory.push({ role: 'user', content: message });
-            }
-
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // Simulate AI response
-            setTimeout(() => {
-                const aiResponse = generateAIResponse(message, type);
-                const aiMessageDiv = document.createElement('div');
-                aiMessageDiv.className = 'chat-message assistant';
-                aiMessageDiv.innerHTML = `<div class="message-content">${escapeHtml(aiResponse)}</div>`;
-                messagesContainer.appendChild(aiMessageDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-                if (type === 'cover') {
-                    coverChatHistory.push({ role: 'assistant', content: aiResponse });
-                } else {
-                    proposalChatHistory.push({ role: 'assistant', content: aiResponse });
-                }
-            }, 500);
-        }
-
-        function handleChatKeypress(event, type) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendChatMessage(type);
-            }
-        }
-
-        function generateAIResponse(userMessage, type) {
-            const lowerMessage = userMessage.toLowerCase();
-
-            if (type === 'cover') {
-                if (lowerMessage.includes('software') || lowerMessage.includes('developer') || lowerMessage.includes('engineer')) {
-                    return "Great! For a software engineering position, I can help you create a compelling cover letter. Could you tell me more about:\n\n1. The company you're applying to\n2. Your key technical skills\n3. Your years of experience\n\nThis will help me craft a personalized letter for you.";
-                } else if (lowerMessage.includes('experience') || lowerMessage.includes('years')) {
-                    return "Excellent! That experience will be valuable. Could you also share:\n\n- The specific skills or technologies you want to highlight\n- Any notable achievements or projects\n- What excites you about this opportunity?\n\nThis will help me create a strong, personalized cover letter.";
-                } else if (lowerMessage.includes('generate') || lowerMessage.includes('create') || lowerMessage.includes('ready')) {
-                    return "Perfect! I have enough information to create your cover letter. Based on our conversation, I'll craft a professional letter that highlights your strengths and enthusiasm for the position. Would you like me to generate it now?";
-                } else {
-                    return "That's helpful information! To create the best cover letter for you, could you share more details about the position and your qualifications? The more specific you are, the better I can tailor the letter to showcase your strengths.";
-                }
-            } else {
-                if (lowerMessage.includes('website') || lowerMessage.includes('web') || lowerMessage.includes('development')) {
-                    return "Excellent! For a web development project proposal, I'll need to understand:\n\n1. The scope of the website (e-commerce, portfolio, corporate, etc.)\n2. Key features and functionality required\n3. Your timeline and budget range\n\nThis will help me create a comprehensive proposal.";
-                } else if (lowerMessage.includes('budget') || lowerMessage.includes('cost') || lowerMessage.includes('price')) {
-                    return "Understanding the budget is important. Could you also tell me:\n\n- The expected project timeline\n- Any specific deliverables or milestones\n- Technical requirements or preferences\n\nThis will help me structure a detailed proposal with clear value propositions.";
-                } else if (lowerMessage.includes('generate') || lowerMessage.includes('create') || lowerMessage.includes('ready')) {
-                    return "Great! I have all the information needed. I'll now create a professional proposal that outlines the project scope, deliverables, timeline, and investment. Would you like me to generate it now?";
-                } else {
-                    return "Thank you for that information. To create a compelling proposal, I'd like to understand more about:\n\n- Your client's specific needs and goals\n- The project scope and deliverables\n- Timeline and budget considerations\n\nPlease share any relevant details!";
-                }
-            }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Auto-resize chat textarea
-        document.querySelectorAll('.chat-input').forEach(textarea => {
-            textarea.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-            });
-        });
-    </script>
-</body>
-</html>('Please fill in at least Client Name and Job Title');
-                return;
-            }
-
-            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-            const coverLetter = `Dear Hiring Manager at ${clientName},
-
-I am writing to express my strong interest in the ${jobTitle} position at ${clientName}. After carefully reviewing the job description, I am confident that my skills and experience make me an excellent candidate for this role.
-
-${jobDesc ? `I was particularly excited to see that you're looking for someone with expertise in the areas you've outlined. My background aligns well with these requirements, and I am eager to bring my experience to your team.` : ''}
-
-Throughout my career, I have consistently demonstrated my ability to deliver high-quality results and collaborate effectively with diverse teams. I am passionate about continuous learning and staying current with industry best practices.
-
-What draws me to ${clientName} is your reputation for excellence and innovation in the industry. I would be honored to contribute to your continued success and growth.
-
-I would welcome the opportunity to discuss how my background and skills would benefit your team. Thank you for considering my application. I look forward to hearing from you.
+Thank you for your time and consideration.
 
 Best regards,
 [Your Name]
-
 Date: ${today}`;
 
-            document.getElementById('coverResultText').textContent = coverLetter;
+            document.getElementById('coverResultText').innerText = text;
             document.getElementById('coverResult').classList.add('show');
         }
 
-        // Proposal Form
         function generateProposal() {
-            const clientName = document.getElementById('proposalClientName').value;
-            const jobTitle = document.getElementById('proposalJobTitle').value;
+            const client = document.getElementById('proposalClientName').value;
+            const title = document.getElementById('proposalJobTitle').value;
             const details = document.getElementById('proposalDetails').value;
+            const today = new Date().toLocaleDateString();
 
-            if (!clientName || !jobTitle) {
-                alert
+            if(!client || !title) return alert("Fill in Client and Project Title");
+
+            const text = `BUSINESS PROPOSAL: ${title}
+Prepared for: ${client}
+Date: ${today}
+
+EXECUTIVE SUMMARY
+We propose a comprehensive solution for ${title} tailored to meet ${client}'s objectives.
+
+PROJECT SCOPE
+${details ? details : "We will deliver the project according to the highest industry standards with a focus on efficiency and excellence."}
+
+Best regards,
+[Your Company]`;
+
+            document.getElementById('proposalResultText').innerText = text;
+            document.getElementById('proposalResult').classList.add('show');
+        }
+
+        function copyText(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
+        }
+    </script>
+</body>
+</html>
