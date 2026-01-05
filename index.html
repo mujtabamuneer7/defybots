@@ -1,234 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DefyBot AI</title>
+<script>
+let history = [];
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+/* LOGIN */
+function unlock() {
+  const pass = document.getElementById("passCode").value;
+  if (pass.toLowerCase() === "mujtaba") {
+    document.getElementById("loginOverlay").style.display = "none";
+  } else {
+    alert("Access Denied");
+  }
+}
 
-  <style>
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
-      border-radius: 10px;
-    }
-  </style>
-</head>
+/* NAV */
+function switchPage(pageId, btn) {
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  document.getElementById(pageId).classList.remove("hidden");
 
-<body class="bg-slate-50 text-slate-900 h-screen flex overflow-hidden">
+  document.querySelectorAll(".nav-btn").forEach(b => {
+    b.classList.remove("bg-indigo-50", "text-indigo-700", "font-semibold");
+    b.classList.add("text-slate-600");
+  });
 
-  <!-- LOGIN OVERLAY -->
-  <div id="loginOverlay" class="fixed inset-0 bg-indigo-600 flex items-center justify-center z-[9999]">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
-      <h2 class="text-2xl font-bold text-indigo-600">🤖 DefyBot AI</h2>
-      <input
-        type="password"
-        id="passCode"
-        placeholder="Password"
-        class="w-full mt-4 p-3 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-400"
-      />
-      <button
-        onclick="unlock()"
-        class="w-full mt-4 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-all"
-      >
-        Access Bot
-      </button>
-    </div>
-  </div>
+  btn.classList.add("bg-indigo-50", "text-indigo-700", "font-semibold");
+}
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-white border-r flex flex-col p-4 hidden md:flex">
-    <div class="text-xl font-black text-indigo-600 mb-8">DefyBot AI</div>
+/* CHAT */
+async function sendChat() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
 
-    <nav class="space-y-2 flex-1">
-      <button
-        onclick="switchPage('chatPage', this)"
-        class="nav-btn w-full text-left p-3 rounded-xl bg-indigo-50 text-indigo-700 font-semibold"
-      >
-        💬 Chat Mode
-      </button>
+  appendMsg(message, "user");
+  input.value = "";
 
-      <button
-        onclick="switchPage('proposalPage', this)"
-        class="nav-btn w-full text-left p-3 rounded-xl text-slate-600 hover:bg-slate-50"
-      >
-        📄 Proposal Generator
-      </button>
-    </nav>
-  </aside>
+  const loadingId = "loading-" + Date.now();
+  appendMsg("Thinking…", "ai", loadingId);
 
-  <!-- MAIN -->
-  <main class="flex-1 flex flex-col h-full">
+  const reply = await callAI(message);
+  document.getElementById(loadingId).innerText = reply;
+}
 
-    <!-- CHAT PAGE -->
-    <section id="chatPage" class="page flex flex-col h-full p-4 md:p-6">
-      <div
-        id="chat-window"
-        class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar"
-      >
-        <div class="flex items-start">
-          <div class="bg-white border p-4 rounded-2xl rounded-bl-none shadow-sm max-w-[80%] text-sm">
-            Welcome, Mujtaba. How can I assist you today?
-          </div>
-        </div>
-      </div>
+/* API CALL */
+async function callAI(prompt) {
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, history })
+    });
 
-      <div class="mt-4 bg-white border rounded-2xl p-2 flex items-center shadow-md">
-        <input
-          type="text"
-          id="userInput"
-          placeholder="Ask me anything..."
-          onkeypress="if(event.key==='Enter') sendChat()"
-          class="flex-1 p-3 outline-none text-sm"
-        />
-        <button
-          onclick="sendChat()"
-          class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold hover:bg-indigo-700"
-        >
-          Send
-        </button>
-      </div>
-    </section>
+    const data = await res.json();
 
-    <!-- PROPOSAL PAGE -->
-    <section id="proposalPage" class="page hidden p-6 overflow-y-auto">
-      <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl border shadow-sm">
-        <h3 class="text-xl font-bold mb-4">Business Proposal</h3>
-
-        <div class="space-y-4">
-          <input
-            type="text"
-            id="clientName"
-            placeholder="Client Name"
-            class="w-full p-3 border rounded-xl outline-none"
-          />
-
-          <textarea
-            id="projectGoals"
-            rows="4"
-            placeholder="Project details..."
-            class="w-full p-3 border rounded-xl outline-none"
-          ></textarea>
-
-          <button
-            onclick="generateProposal()"
-            class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl"
-          >
-            Generate
-          </button>
-        </div>
-
-        <div
-          id="toolResult"
-          class="hidden mt-6 p-4 bg-slate-50 border-l-4 border-indigo-600 rounded text-sm whitespace-pre-wrap"
-        ></div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- JAVASCRIPT -->
-  <script>
-    let history = [];
-
-    /* LOGIN */
-    function unlock() {
-      const pass = document.getElementById("passCode").value.toLowerCase();
-      if (pass === "mujtaba") {
-        document.getElementById("loginOverlay").style.display = "none";
-      } else {
-        alert("Access Denied");
-      }
+    if (data.error) {
+      return "❌ " + data.error;
     }
 
-    /* PAGE SWITCH */
-    function switchPage(pageId, btn) {
-      document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-      document.getElementById(pageId).classList.remove("hidden");
+    history.push(
+      { role: "user", parts: [{ text: prompt }] },
+      { role: "model", parts: [{ text: data.reply }] }
+    );
 
-      document.querySelectorAll(".nav-btn").forEach(b => {
-        b.classList.remove("bg-indigo-50", "text-indigo-700", "font-semibold");
-        b.classList.add("text-slate-600");
-      });
+    return data.reply;
 
-      btn.classList.add("bg-indigo-50", "text-indigo-700", "font-semibold");
-    }
+  } catch (err) {
+    return "❌ Network error";
+  }
+}
 
-    /* CALL BACKEND */
-    async function callGemini(prompt) {
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, history })
-        });
+/* UI MESSAGE */
+function appendMsg(text, sender, id = null) {
+  const win = document.getElementById("chat-window");
 
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
+  const wrap = document.createElement("div");
+  wrap.className = sender === "user" ? "flex justify-end" : "flex justify-start";
 
-        history.push(
-          { role: "user", parts: [{ text: prompt }] },
-          { role: "model", parts: [{ text: data.text }] }
-        );
+  const bubble = document.createElement("div");
+  bubble.className =
+    sender === "user"
+      ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none max-w-[85%] text-sm"
+      : "bg-white border p-3 rounded-2xl rounded-bl-none max-w-[85%] text-sm";
 
-        return data.text;
-      } catch (err) {
-        return "❌ " + err.message;
-      }
-    }
+  if (id) bubble.id = id;
+  bubble.innerText = text;
 
-    /* SEND CHAT */
-    async function sendChat() {
-      const input = document.getElementById("userInput");
-      const msg = input.value.trim();
-      if (!msg) return;
-
-      appendMsg(msg, "user");
-      input.value = "";
-
-      const loadingId = "L-" + Date.now();
-      appendMsg("Thinking...", "ai", loadingId);
-
-      const aiText = await callGemini(msg);
-      document.getElementById(loadingId).innerText = aiText;
-    }
-
-    /* PROPOSAL */
-    async function generateProposal() {
-      const client = document.getElementById("clientName").value;
-      const goals = document.getElementById("projectGoals").value;
-      if (!client || !goals) return alert("Please fill all fields");
-
-      const box = document.getElementById("toolResult");
-      box.classList.remove("hidden");
-      box.innerText = "Generating...";
-
-      const prompt = `Generate a business proposal for ${client}. Focus: ${goals}`;
-      box.innerText = await callGemini(prompt);
-    }
-
-    /* UI MESSAGE */
-    function appendMsg(text, sender, id = null) {
-      const win = document.getElementById("chat-window");
-
-      const wrap = document.createElement("div");
-      wrap.className = `flex ${sender === "user" ? "justify-end" : "justify-start"}`;
-
-      const bubble = document.createElement("div");
-      bubble.className =
-        sender === "user"
-          ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none shadow-sm max-w-[85%] text-sm"
-          : "bg-white border p-3 rounded-2xl rounded-bl-none shadow-sm max-w-[85%] text-sm";
-
-      if (id) bubble.id = id;
-      bubble.innerText = text;
-
-      wrap.appendChild(bubble);
-      win.appendChild(wrap);
-      win.scrollTop = win.scrollHeight;
-    }
-  </script>
-</body>
-</html>
+  wrap.appendChild(bubble);
+  win.appendChild(wrap);
+  win.scrollTop = win.scrollHeight;
+}
+</script>
