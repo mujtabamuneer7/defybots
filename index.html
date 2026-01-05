@@ -919,6 +919,156 @@
 
             const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
+            const proposal = `BUSINESS PROPOSAL
+
+To: ${clientName}
+Date: ${today}
+Project: ${jobTitle}
+
+EXECUTIVE SUMMARY
+
+We are pleased to present this proposal for ${jobTitle}. Our team is committed to delivering exceptional results that exceed your expectations and drive measurable success for your organization.
+
+PROJECT OVERVIEW
+
+${details || 'This project will address your key business objectives with innovative solutions tailored to your specific needs. We will work closely with your team to ensure seamless execution and outstanding results.'}
+
+SCOPE OF WORK
+
+Our comprehensive approach includes:
+• Thorough analysis of your requirements and objectives
+• Strategic planning and project roadmap development
+• Implementation with attention to detail and quality
+• Regular progress updates and transparent communication
+• Post-delivery support and documentation
+
+TIMELINE & DELIVERABLES
+
+We will provide a detailed timeline upon project kickoff, with clear milestones and deliverables at each stage to ensure we stay aligned with your goals and deadlines.
+
+WHY CHOOSE US
+
+• Proven track record of successful project delivery
+• Experienced team of dedicated professionals
+• Client-focused approach with transparent communication
+• Commitment to quality, innovation, and excellence
+
+NEXT STEPS
+
+We look forward to discussing this proposal with you in detail. Please feel free to contact us with any questions or to schedule a meeting at your convenience.
+
+Thank you for considering our proposal. We are excited about the opportunity to partner with ${clientName} and contribute to your success.
+
+Best regards,
+[Your Company Name]`;
+
+            document.getElementById('proposalResultText').textContent = proposal;
+            document.getElementById('proposalResult').classList.add('show');
+        }
+
+        // Chat functionality
+        let coverChatHistory = [];
+        let proposalChatHistory = [];
+
+        function sendChatMessage(type) {
+            const inputId = type === 'cover' ? 'coverChatInput' : 'proposalChatInput';
+            const messagesId = type === 'cover' ? 'coverChatMessages' : 'proposalChatMessages';
+            const input = document.getElementById(inputId);
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add user message to chat
+            const messagesContainer = document.getElementById(messagesId);
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'chat-message user';
+            userMessageDiv.innerHTML = `<div class="message-content">${escapeHtml(message)}</div>`;
+            messagesContainer.appendChild(userMessageDiv);
+
+            // Clear input
+            input.value = '';
+
+            // Store in history
+            if (type === 'cover') {
+                coverChatHistory.push({ role: 'user', content: message });
+            } else {
+                proposalChatHistory.push({ role: 'user', content: message });
+            }
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Simulate AI response
+            setTimeout(() => {
+                const aiResponse = generateAIResponse(message, type);
+                const aiMessageDiv = document.createElement('div');
+                aiMessageDiv.className = 'chat-message assistant';
+                aiMessageDiv.innerHTML = `<div class="message-content">${escapeHtml(aiResponse)}</div>`;
+                messagesContainer.appendChild(aiMessageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                if (type === 'cover') {
+                    coverChatHistory.push({ role: 'assistant', content: aiResponse });
+                } else {
+                    proposalChatHistory.push({ role: 'assistant', content: aiResponse });
+                }
+            }, 500);
+        }
+
+        function handleChatKeypress(event, type) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage(type);
+            }
+        }
+
+        function generateAIResponse(userMessage, type) {
+            const lowerMessage = userMessage.toLowerCase();
+
+            if (type === 'cover') {
+                if (lowerMessage.includes('software') || lowerMessage.includes('developer') || lowerMessage.includes('engineer')) {
+                    return "Great! For a software engineering position, I can help you create a compelling cover letter. Could you tell me more about:\n\n1. The company you're applying to\n2. Your key technical skills\n3. Your years of experience\n\nThis will help me craft a personalized letter for you.";
+                } else if (lowerMessage.includes('experience') || lowerMessage.includes('years')) {
+                    return "Excellent! That experience will be valuable. Could you also share:\n\n- The specific skills or technologies you want to highlight\n- Any notable achievements or projects\n- What excites you about this opportunity?\n\nThis will help me create a strong, personalized cover letter.";
+                } else if (lowerMessage.includes('generate') || lowerMessage.includes('create') || lowerMessage.includes('ready')) {
+                    return "Perfect! I have enough information to create your cover letter. Based on our conversation, I'll craft a professional letter that highlights your strengths and enthusiasm for the position. Would you like me to generate it now?";
+                } else {
+                    return "That's helpful information! To create the best cover letter for you, could you share more details about the position and your qualifications? The more specific you are, the better I can tailor the letter to showcase your strengths.";
+                }
+            } else {
+                if (lowerMessage.includes('website') || lowerMessage.includes('web') || lowerMessage.includes('development')) {
+                    return "Excellent! For a web development project proposal, I'll need to understand:\n\n1. The scope of the website (e-commerce, portfolio, corporate, etc.)\n2. Key features and functionality required\n3. Your timeline and budget range\n\nThis will help me create a comprehensive proposal.";
+                } else if (lowerMessage.includes('budget') || lowerMessage.includes('cost') || lowerMessage.includes('price')) {
+                    return "Understanding the budget is important. Could you also tell me:\n\n- The expected project timeline\n- Any specific deliverables or milestones\n- Technical requirements or preferences\n\nThis will help me structure a detailed proposal with clear value propositions.";
+                } else if (lowerMessage.includes('generate') || lowerMessage.includes('create') || lowerMessage.includes('ready')) {
+                    return "Great! I have all the information needed. I'll now create a professional proposal that outlines the project scope, deliverables, timeline, and investment. Would you like me to generate it now?";
+                } else {
+                    return "Thank you for that information. To create a compelling proposal, I'd like to understand more about:\n\n- Your client's specific needs and goals\n- The project scope and deliverables\n- Timeline and budget considerations\n\nPlease share any relevant details!";
+                }
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Auto-resize chat textarea
+        document.querySelectorAll('.chat-input').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            });
+        });
+    </script>
+</body>
+</html>('Please fill in at least Client Name and Job Title');
+                return;
+            }
+
+            const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
             const coverLetter = `Dear Hiring Manager at ${clientName},
 
 I am writing to express my strong interest in the ${jobTitle} position at ${clientName}. After carefully reviewing the job description, I am confident that my skills and experience make me an excellent candidate for this role.
