@@ -9,16 +9,22 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
 
+        /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar); color: white; padding: 25px; display: flex; flex-direction: column; gap: 10px; }
-        .sidebar h2 { margin-bottom: 30px; letter-spacing: 1px; font-size: 22px; color: #fff; }
+        .sidebar h2 { margin-bottom: 20px; letter-spacing: 1px; font-size: 22px; color: #fff; }
         .nav-btn { background: transparent; color: #94a3b8; border: none; padding: 12px; text-align: left; cursor: pointer; border-radius: 8px; font-weight: 600; transition: 0.2s; }
         .nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
         .nav-btn.active { background: var(--primary); color: white; }
 
+        /* Status Indicator */
+        .status-badge { font-size: 11px; padding: 5px 10px; background: rgba(255,255,255,0.1); border-radius: 20px; color: #aaa; margin-top: auto; text-align: center; }
+
+        /* Main Workspace */
         .main { flex: 1; display: flex; flex-direction: column; }
         .page { display: none; height: 100%; flex-direction: column; padding: 20px; }
         .page.active { display: flex; }
 
+        /* Chat Window */
         #chatDisplay { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; }
         .ai { background: white; align-self: flex-start; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -28,7 +34,8 @@
         .input-bar input { flex: 1; padding: 12px 20px; border: 1px solid var(--border); border-radius: 25px; outline: none; font-size: 14px; }
         
         .btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        #res { margin-top: 20px; font-size: 14px; white-space: pre-wrap; display: none; background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); color: #334155; }
+        
+        #res { margin-top: 20px; font-size: 14px; white-space: pre-wrap; display: none; background: #f1f5f9; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -37,12 +44,13 @@
         <h2>DEFYBOT</h2>
         <button class="nav-btn active" onclick="show('chatPage', this)">💬 Chat Mode</button>
         <button class="nav-btn" onclick="show('propPage', this)">📄 Proposal Gen</button>
+        <div class="status-badge" id="modelStatus">Connecting...</div>
     </nav>
 
     <main class="main">
         <section id="chatPage" class="page active">
             <div id="chatDisplay">
-                <div class="msg ai">Welcome back Mujtaba. DefyBot is updated. Try asking me something now!</div>
+                <div class="msg ai">Hello Mujtaba. I am establishing a secure connection to Google. Ask me anything!</div>
             </div>
             <div class="input-bar">
                 <input type="text" id="userInput" placeholder="Ask Gemini..." onkeypress="if(event.key==='Enter') send()">
@@ -54,7 +62,7 @@
             <div style="max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 15px; border: 1px solid var(--border); width: 100%;">
                 <h3>Proposal Generator</h3>
                 <input type="text" id="cName" placeholder="Client Name" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;">
-                <textarea id="pGoals" rows="6" placeholder="Details" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                <textarea id="pGoals" rows="6" placeholder="Project Details" style="width:100%; padding:10px; margin-top:15px; border:1px solid #ddd; border-radius:8px;"></textarea>
                 <button class="btn" style="width: 100%; margin-top:15px;" onclick="generate()">Generate</button>
                 <div id="res"></div>
             </div>
@@ -72,47 +80,60 @@
             btn.classList.add('active');
         }
 
+        // --- THE UNIVERSAL API FIX ---
         async function callGemini(prompt, isChat = true) {
-            // We now try 'gemini-1.5-flash-latest' which is more stable for new API keys
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
             
-            const requestBody = {
-                contents: isChat ? [...history, { role: "user", parts: [{ text: prompt }] }] : [{ role: "user", parts: [{ text: prompt }] }]
-            };
+            // List of models to try in order. If one fails, we try the next.
+            const modelsToTry = [
+                "gemini-1.5-flash",
+                "gemini-1.5-flash-latest",
+                "gemini-pro"
+            ];
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
+            for (const modelName of modelsToTry) {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
+                
+                const requestBody = {
+                    contents: isChat ? [...history, { role: "user", parts: [{ text: prompt }] }] : [{ role: "user", parts: [{ text: prompt }] }]
+                };
 
-                const data = await response.json();
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
 
-                if (data.error) {
-                    // Fallback for older projects
-                    if(data.error.message.includes("not found")) {
-                        return await tryFallback(prompt, isChat);
+                    const data = await response.json();
+
+                    // If this model threw an error, continue to the next iteration of the loop
+                    if (data.error) {
+                        console.warn(`Model ${modelName} failed:`, data.error.message);
+                        continue; 
                     }
-                    return `❌ API Error: ${data.error.message}`;
-                }
 
-                const responseText = data.candidates[0].content.parts[0].text;
-                if (isChat) {
-                    history.push({ role: "user", parts: [{ text: prompt }] });
-                    history.push({ role: "model", parts: [{ text: responseText }] });
-                }
-                return responseText;
-            } catch (err) { return "❌ Connection Error."; }
-        }
+                    // If we got here, IT WORKED!
+                    document.getElementById('modelStatus').innerText = `🟢 Connected: ${modelName}`;
+                    document.getElementById('modelStatus').style.color = "#4ade80";
 
-        // Second chance if 'flash-latest' fails
-        async function tryFallback(prompt, isChat) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
-            const requestBody = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-            const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
-            const d = await r.json();
-            return d.candidates ? d.candidates[0].content.parts[0].text : "❌ All models failed.";
+                    const responseText = data.candidates[0].content.parts[0].text;
+                    
+                    if (isChat) {
+                        history.push({ role: "user", parts: [{ text: prompt }] });
+                        history.push({ role: "model", parts: [{ text: responseText }] });
+                    }
+                    return responseText;
+
+                } catch (err) {
+                    // Network error, try next model
+                    continue;
+                }
+            }
+
+            // If the loop finishes and nothing worked:
+            document.getElementById('modelStatus').innerText = "🔴 Connection Failed";
+            document.getElementById('modelStatus').style.color = "#f87171";
+            return "❌ Critical Error: None of the Gemini models accepted your API Key. Please verify your Project settings in Google Cloud Console.";
         }
 
         async function send() {
@@ -131,7 +152,7 @@
             const c = document.getElementById('cName').value;
             const g = document.getElementById('pGoals').value;
             const r = document.getElementById('res');
-            if(!c || !g) return alert("Fill fields");
+            if(!c || !g) return alert("Fill all fields");
             r.style.display = "block"; r.innerText = "Consulting AI...";
             r.innerText = await callGemini(`Write a proposal for ${c}. Goals: ${g}`, false);
         }
