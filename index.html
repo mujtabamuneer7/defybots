@@ -9,8 +9,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
+    .scroll::-webkit-scrollbar { width: 4px; }
+    .scroll::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 10px;
     }
@@ -19,30 +19,30 @@
 
 <body class="bg-slate-50 text-slate-900 h-screen flex overflow-hidden">
 
-<!-- LOGIN OVERLAY -->
-<div id="loginOverlay" class="fixed inset-0 bg-indigo-600 flex items-center justify-center z-50">
-  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm text-center">
-    <h2 class="text-2xl font-bold text-indigo-600 mb-4">🤖 DefyBot AI</h2>
-    <input id="passCode" type="password" placeholder="Password"
-      class="w-full p-3 border rounded-xl outline-none mb-4">
-    <button id="loginBtn"
-      class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">
-      Access Bot
+<!-- LOGIN -->
+<div id="login" class="fixed inset-0 bg-indigo-600 flex items-center justify-center z-50">
+  <div class="bg-white p-8 rounded-2xl w-full max-w-sm text-center shadow-xl">
+    <h1 class="text-2xl font-bold text-indigo-600 mb-4">🤖 DefyBot AI</h1>
+    <input id="password" type="password" placeholder="Password"
+      class="w-full p-3 border rounded-xl mb-4">
+    <button onclick="unlock()"
+      class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">
+      Continue
     </button>
   </div>
 </div>
 
 <!-- SIDEBAR -->
 <aside class="w-64 bg-white border-r p-4 hidden md:flex flex-col">
-  <div class="text-xl font-black text-indigo-600 mb-6">DefyBot AI</div>
+  <h2 class="text-xl font-bold text-indigo-600 mb-6">DefyBot</h2>
 
-  <button id="chatTab"
-    class="nav-btn p-3 rounded-xl bg-indigo-50 text-indigo-700 font-semibold mb-2">
+  <button onclick="showChat()"
+    class="p-3 rounded-xl bg-indigo-50 text-indigo-700 font-semibold mb-2">
     💬 Chat
   </button>
 
-  <button id="proposalTab"
-    class="nav-btn p-3 rounded-xl text-slate-600 hover:bg-slate-100">
+  <button onclick="showProposal()"
+    class="p-3 rounded-xl text-slate-600 hover:bg-slate-100">
     📄 Proposal
   </button>
 </aside>
@@ -50,128 +50,131 @@
 <!-- MAIN -->
 <main class="flex-1 flex flex-col h-full">
 
-  <!-- CHAT PAGE -->
-  <section id="chatPage" class="page flex flex-col h-full p-4">
-    <div id="chatWindow"
-      class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+<!-- CHAT PAGE -->
+<section id="chatPage" class="flex flex-col h-full p-4">
+  <div id="messages" class="flex-1 overflow-y-auto space-y-4 scroll">
 
-      <div class="bg-white border p-4 rounded-2xl shadow-sm max-w-[80%]">
-        Welcome! Ask me anything.
-      </div>
-
+    <div class="bg-white border p-4 rounded-2xl max-w-[80%]">
+      Welcome! Ask me anything.
     </div>
 
-    <div class="mt-4 bg-white border rounded-2xl p-2 flex gap-2">
-      <input id="userInput" type="text" placeholder="Ask something..."
-        class="flex-1 p-3 outline-none">
-      <button id="sendBtn"
-        class="bg-indigo-600 text-white px-5 rounded-xl font-bold">
-        Send
-      </button>
-    </div>
-  </section>
+  </div>
 
-  <!-- PROPOSAL PAGE -->
-  <section id="proposalPage" class="page hidden p-6">
-    <div class="max-w-xl bg-white p-6 rounded-2xl border">
-      <h2 class="text-xl font-bold mb-4">Proposal Generator</h2>
+  <div class="mt-4 bg-white border rounded-2xl p-2 flex gap-2">
+    <input id="input" type="text" placeholder="Type a message..."
+      class="flex-1 p-3 outline-none"
+      onkeydown="if(event.key==='Enter') send()">
+    <button onclick="send()"
+      class="bg-indigo-600 text-white px-6 rounded-xl font-bold">
+      Send
+    </button>
+  </div>
+</section>
 
-      <input id="clientName" placeholder="Client Name"
-        class="w-full p-3 border rounded-xl mb-3">
+<!-- PROPOSAL PAGE -->
+<section id="proposalPage" class="hidden p-6">
+  <div class="bg-white p-6 rounded-2xl border max-w-xl">
+    <h2 class="text-xl font-bold mb-4">Proposal Generator</h2>
 
-      <textarea id="projectGoals" rows="4"
-        placeholder="Project details"
-        class="w-full p-3 border rounded-xl mb-3"></textarea>
+    <input id="client" placeholder="Client name"
+      class="w-full p-3 border rounded-xl mb-3">
 
-      <button id="generateBtn"
-        class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl">
-        Generate
-      </button>
+    <textarea id="details" rows="4" placeholder="Project details"
+      class="w-full p-3 border rounded-xl mb-3"></textarea>
 
-      <pre id="toolResult"
-        class="hidden mt-4 bg-slate-100 p-4 rounded-xl text-sm whitespace-pre-wrap"></pre>
-    </div>
-  </section>
+    <button onclick="generate()"
+      class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">
+      Generate
+    </button>
+
+    <pre id="result"
+      class="hidden mt-4 bg-slate-100 p-4 rounded-xl text-sm whitespace-pre-wrap"></pre>
+  </div>
+</section>
 
 </main>
 
-<!-- SCRIPT -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  let history = [];
-
-  /* LOGIN */
-  document.getElementById("loginBtn").onclick = () => {
-    const pass = document.getElementById("passCode").value.toLowerCase();
-    if (pass === "mujtaba") {
-      document.getElementById("loginOverlay").style.display = "none";
-    } else {
-      alert("Wrong password");
-    }
-  };
-
-  /* NAV */
-  const chatPage = document.getElementById("chatPage");
-  const proposalPage = document.getElementById("proposalPage");
-
-  document.getElementById("chatTab").onclick = () => {
-    chatPage.classList.remove("hidden");
-    proposalPage.classList.add("hidden");
-  };
-
-  document.getElementById("proposalTab").onclick = () => {
-    proposalPage.classList.remove("hidden");
-    chatPage.classList.add("hidden");
-  };
-
-  /* CHAT */
-  document.getElementById("sendBtn").onclick = sendChat;
-
-  async function sendChat() {
-    const input = document.getElementById("userInput");
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    addBubble(msg, true);
-    input.value = "";
-
-    const loading = addBubble("Thinking…", false);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: msg, history })
-      });
-
-      const data = await res.json();
-      loading.innerText = data.reply || data.error || "Error";
-
-      history.push(
-        { role: "user", parts: [{ text: msg }] },
-        { role: "model", parts: [{ text: loading.innerText }] }
-      );
-
-    } catch {
-      loading.innerText = "Network error";
-    }
+/* LOGIN */
+function unlock() {
+  const pass = document.getElementById("password").value.toLowerCase();
+  if (pass === "mujtaba") {
+    document.getElementById("login").style.display = "none";
+  } else {
+    alert("Wrong password");
   }
+}
 
-  function addBubble(text, isUser) {
-    const div = document.createElement("div");
-    div.className = isUser
-      ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none max-w-[80%] ml-auto"
-      : "bg-white border p-3 rounded-2xl rounded-bl-none max-w-[80%]";
+/* NAV */
+function showChat() {
+  chatPage.classList.remove("hidden");
+  proposalPage.classList.add("hidden");
+}
 
-    div.innerText = text;
-    document.getElementById("chatWindow").appendChild(div);
-    return div;
+function showProposal() {
+  proposalPage.classList.remove("hidden");
+  chatPage.classList.add("hidden");
+}
+
+/* CHAT */
+async function send() {
+  const input = document.getElementById("input");
+  const text = input.value.trim();
+  if (!text) return;
+
+  add(text, true);
+  input.value = "";
+
+  const loading = add("Thinking…", false);
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: text })
+    });
+
+    const data = await res.json();
+    loading.innerText = data.reply || data.error || "Error";
+
+  } catch {
+    loading.innerText = "Network error";
   }
+}
 
-});
+function add(text, user) {
+  const div = document.createElement("div");
+  div.className = user
+    ? "bg-indigo-600 text-white p-3 rounded-2xl rounded-br-none max-w-[80%] ml-auto"
+    : "bg-white border p-3 rounded-2xl rounded-bl-none max-w-[80%]";
+
+  div.innerText = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return div;
+}
+
+/* PROPOSAL */
+async function generate() {
+  const c = client.value;
+  const d = details.value;
+  if (!c || !d) return alert("Fill all fields");
+
+  result.classList.remove("hidden");
+  result.innerText = "Generating...";
+
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      prompt: `Write a professional proposal for ${c}. Details: ${d}`
+    })
+  });
+
+  const data = await res.json();
+  result.innerText = data.reply || data.error;
+}
 </script>
 
 </body>
 </html>
-
