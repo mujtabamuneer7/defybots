@@ -47,10 +47,10 @@
 
         /* --- CHAT INTERFACE --- */
         #chatDisplay { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; background: #fff; margin-bottom: 80px; }
-        .msg { max-width: 80%; padding: 12px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+        .msg { max-width: 85%; padding: 12px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
         .user-msg { align-self: flex-end; background: var(--deep); color: white; border-bottom-right-radius: 2px; }
         .ai-msg { align-self: flex-start; background: #f0f4f9; color: #1f1f1f; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
-        .chat-input-container { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px; }
+        .chat-input-container { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px; background: white; padding-top: 10px; }
 
         /* --- CONSULTANT CARD --- */
         .consultant-card { background: white; padding: 40px; border-radius: 28px; border: 1px solid var(--border); max-width: 850px; margin: 0 auto; }
@@ -101,7 +101,7 @@
 
         <section id="chatPage" class="page">
             <div id="chatDisplay">
-                <div class="msg ai-msg">Hello Mujtaba. How can I help you with your technical workflow today?</div>
+                <div class="msg ai-msg">Hello Mujtaba. Our conversation history is now active. I will remember previous context.</div>
             </div>
             <div class="chat-input-container">
                 <input type="text" id="chatInput" placeholder="Ask a technical question..." onkeypress="if(event.key==='Enter') sendChatMessage()">
@@ -113,14 +113,17 @@
     <script>
         const API_KEY = "AIzaSyB4UoFQOj5Yg-2NFY_log9jRTHMlb_2bs4";
         const MODEL = "gemini-1.5-flash";
+        
+        // Chat Memory Store
+        let chatContext = [];
 
-        async function callAI(prompt) {
+        async function callAI(messages) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
             try {
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    body: JSON.stringify({ contents: messages })
                 });
                 const data = await response.json();
                 return data.candidates[0].content.parts[0].text;
@@ -141,17 +144,18 @@
             resArea.style.display = "block";
             resTxt.innerText = "Analyzing architecture requirements...";
 
-            const prompt = `Act as a $150/hr Consultant for ${u}. Job: ${j}. Client: ${c}. Niche: ${n}. Experience: ${w}.
-            Strict Rules: 
-            1. First 2 lines use tech keywords (PostgreSQL, Race conditions, etc).
-            2. Mention experience: "${w}".
+            const promptText = `Act as a $150/hr Consultant for ${u}. Job: ${j}. Client: ${c}. Niche: ${n}. Experience: ${w}.
+            Rules: 
+            1. First 2 lines use tech keywords.
+            2. Mention: "${w}".
             3. Use: "I cannot guarantee a definitive solution without a deep-dive architecture audit first."
             4. Differentiate "Quick Patch" vs "Permanent Restructuring".
             5. Ask for "10-minute call".
             6. P.S. with a technical guess.
             Style: Hey ${c}, no "I am", max 150 words.`;
 
-            resTxt.innerText = await callAI(prompt);
+            const messageObj = [{ role: "user", parts: [{ text: promptText }] }];
+            resTxt.innerText = await callAI(messageObj);
         }
 
         // --- CHAT LOGIC ---
@@ -162,10 +166,18 @@
 
             const userText = input.value;
             display.innerHTML += `<div class="msg user-msg">${userText}</div>`;
+            
+            // Add to persistent context
+            chatContext.push({ role: "user", parts: [{ text: userText }] });
+
             input.value = "";
             display.scrollTop = display.scrollHeight;
 
-            const aiResponse = await callAI(userText);
+            const aiResponse = await callAI(chatContext);
+            
+            // Save AI response to context
+            chatContext.push({ role: "model", parts: [{ text: aiResponse }] });
+
             display.innerHTML += `<div class="msg ai-msg">${aiResponse}</div>`;
             display.scrollTop = display.scrollHeight;
         }
