@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Premium</title>
+    <title>DefyBot AI | Workspace</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         :root { 
@@ -13,7 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
         body { background: white; height: 100vh; display: flex; overflow: hidden; color: var(--deep); }
 
-        /* --- SIDEBAR (BIG LOGO) --- */
+        /* --- SIDEBAR --- */
         .sidebar { 
             width: 300px; background: var(--gemini-blue); border-right: 1px solid var(--border);
             padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;
@@ -21,7 +21,7 @@
         
         .logo-area { text-align: center; margin-bottom: 50px; }
         .logo-area img { 
-            width: 160px; height: 160px; /* MUCH BIGGER LOGO */
+            width: 160px; height: 160px; 
             object-fit: contain; border-radius: 30px; background: white; padding: 15px;
             box-shadow: 0 15px 40px rgba(0,123,255,0.15); border: 2px solid white;
         }
@@ -36,65 +36,67 @@
         .nav-btn.active { background: white; color: var(--accent); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border); }
 
         /* --- MAIN CONTENT --- */
-        .main { flex: 1; position: relative; background: white; display: flex; flex-direction: column; }
+        .main { flex: 1; position: relative; background: white; display: flex; flex-direction: column; overflow: hidden; }
         .page { display: none; height: 100%; width: 100%; padding: 40px; overflow-y: auto; }
         .page.active { display: flex; flex-direction: column; animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- CHAT SYSTEM --- */
-        #chatDisplay { flex: 1; padding: 0 10% 120px 10%; display: flex; flex-direction: column; gap: 25px; }
+        #chatDisplay { flex: 1; padding: 0 5% 120px 5%; display: flex; flex-direction: column; gap: 25px; overflow-y: auto; }
         .msg-container { display: flex; flex-direction: column; gap: 8px; max-width: 85%; }
         .ai-cont { align-self: flex-start; }
         .user-cont { align-self: flex-end; }
 
-        .msg { padding: 18px 25px; border-radius: 25px; font-size: 16px; line-height: 1.6; }
-        .ai { background: var(--gemini-blue); border-bottom-left-radius: 4px; }
+        .msg { padding: 16px 22px; border-radius: 22px; font-size: 15px; line-height: 1.6; position: relative; }
+        .ai { background: var(--gemini-blue); border-bottom-left-radius: 4px; border: 1px solid #e1efff; }
         .user { background: var(--deep); color: white; border-bottom-right-radius: 4px; }
 
         /* TOOLBOX (Copy, Share, Like) */
-        .toolbox { display: flex; gap: 15px; padding-left: 10px; opacity: 0; transition: 0.3s; }
+        .toolbox { display: flex; gap: 12px; padding: 5px 12px; opacity: 0; transition: 0.2s; }
         .msg-container:hover .toolbox { opacity: 1; }
-        .tool-btn { font-size: 12px; cursor: pointer; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+        .tool-btn { font-size: 11px; cursor: pointer; color: #adb5bd; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .tool-btn:hover { color: var(--accent); }
 
         .input-bar {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 85%; max-width: 800px; background: white; border: 1px solid var(--border);
-            padding: 12px 20px; border-radius: 100px; display: flex; gap: 10px; box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+            width: 85%; max-width: 750px; background: white; border: 1px solid var(--border);
+            padding: 10px 10px 10px 25px; border-radius: 100px; display: flex; gap: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.06);
         }
-        .input-bar input { flex: 1; border: none; outline: none; font-size: 16px; }
+        .input-bar input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; }
+        .send-btn { background: var(--deep); color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: 600; }
 
         /* --- UPWORK TOOL --- */
-        .card { background: white; padding: 40px; border-radius: 30px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.02); }
+        .card { background: white; padding: 40px; border-radius: 30px; border: 1px solid var(--border); max-width: 800px; margin: 0 auto; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        label { display: block; font-size: 11px; font-weight: 800; color: #5f6368; margin-bottom: 8px; letter-spacing: 1px; }
-        input, textarea { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 15px; background: var(--gemini-blue); }
+        label { display: block; font-size: 11px; font-weight: 800; color: #5f6368; margin-bottom: 8px; }
+        input, textarea { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #fafafa; outline: none; transition: 0.3s; }
+        input:focus, textarea:focus { border-color: var(--accent); background: white; }
         .btn-black { background: var(--deep); color: white; border: none; padding: 18px; border-radius: 50px; cursor: pointer; font-weight: 700; width: 100%; margin-top: 15px; }
 
-        #resBox { margin-top: 25px; padding: 25px; background: #f8fbff; border-radius: 20px; border: 1px dashed var(--accent); display: none; white-space: pre-wrap; position: relative; }
+        #resBox { margin-top: 25px; padding: 25px; background: #f8fbff; border-radius: 20px; border: 1px dashed var(--accent); display: none; white-space: pre-wrap; line-height: 1.7; }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <div class="logo-area">
-            <img src="logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
+            <img src="logo.png" alt="DefyBot" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
             <h2>DEFYBOT</h2>
         </div>
         <button class="nav-btn active" onclick="show('homePage', this)"><span>🏠</span> Home</button>
         <button class="nav-btn" onclick="show('chatPage', this)"><span>💬</span> AI Assistant</button>
         <button class="nav-btn" onclick="show('upworkPage', this)"><span>✍️</span> Writing Tools</button>
-        <div id="connectionStatus" style="margin-top:auto; font-size:10px; text-align:center; opacity:0.5;">SECURE MODE</div>
+        <div id="connectionStatus" style="margin-top:auto; font-size:10px; text-align:center; color: #adb5bd; font-weight: bold;">LINKING...</div>
     </nav>
 
     <main class="main">
         <section id="homePage" class="page active">
             <div style="text-align:center; max-width:700px; margin: 10% auto;">
-                <h1 style="font-size: 48px; font-weight: 300; margin-bottom: 20px;">Welcome, Mujtaba.</h1>
-                <p style="color:#5f6368; font-size: 18px; margin-bottom: 40px;">Select a tool from the sidebar to begin your professional workflow.</p>
+                <h1 style="font-size: 42px; font-weight: 300; margin-bottom: 15px;">Welcome, Mujtaba.</h1>
+                <p style="color:#5f6368; font-size: 18px; margin-bottom: 40px;">Your classic, professional AI command center is ready.</p>
                 <div style="display:flex; gap:20px; justify-content:center;">
-                    <div style="padding:20px; background:var(--gemini-blue); border-radius:20px; width:200px;"><b>Quick Chat</b></div>
-                    <div style="padding:20px; background:var(--gemini-blue); border-radius:20px; width:200px;"><b>Upwork Pro</b></div>
+                    <div style="padding:25px; background:var(--gemini-blue); border-radius:20px; width:220px; border:1px solid #e1efff;"><b>High Performance</b></div>
+                    <div style="padding:25px; background:var(--gemini-blue); border-radius:20px; width:220px; border:1px solid #e1efff;"><b>Short & Sharp</b></div>
                 </div>
             </div>
         </section>
@@ -102,12 +104,12 @@
         <section id="chatPage" class="page">
             <div id="chatDisplay">
                 <div class="msg-container ai-cont">
-                    <div class="msg ai">Redesigned and ready. How can I help today?</div>
+                    <div class="msg ai">I am connected and ready. How can I help you today?</div>
                 </div>
             </div>
             <div class="input-bar">
-                <input type="text" id="userInput" placeholder="Ask Gemini something..." onkeypress="if(event.key==='Enter') sendChat()">
-                <button onclick="sendChat()" style="background:var(--deep); color:white; border:none; padding:8px 20px; border-radius:50px; cursor:pointer;">Send</button>
+                <input type="text" id="userInput" placeholder="Ask anything..." onkeypress="if(event.key==='Enter') sendChat()">
+                <button class="send-btn" onclick="sendChat()">Send</button>
             </div>
         </section>
 
@@ -116,17 +118,17 @@
                 <h2 style="margin-bottom:20px;">Upwork Proposal Generator</h2>
                 <div class="grid-2">
                     <div><label>Your Name</label><input type="text" id="uName" placeholder="Mujtaba Muneer"></div>
-                    <div><label>Client Name</label><input type="text" id="cName" placeholder="e.g. Sarah"></div>
+                    <div><label>Client Name</label><input type="text" id="cName" placeholder="e.g. John"></div>
                 </div>
                 <div class="grid-2">
-                    <div><label>Your Niche</label><input type="text" id="uNiche" placeholder="e.g. Web Designer"></div>
-                    <div><label>Relevant Win</label><input type="text" id="uWin" placeholder="e.g. Fixed 10+ bugs in 24 hours"></div>
+                    <div><label>Your Niche</label><input type="text" id="uNiche" placeholder="Web Developer"></div>
+                    <div><label>Relevant Win</label><input type="text" id="uWin" placeholder="Completed similar task in 24h"></div>
                 </div>
-                <div style="margin-bottom:20px;"><label>Job Description</label><textarea id="jobPost" rows="5" placeholder="Paste the job requirements..."></textarea></div>
-                <button class="btn-black" onclick="generateUpwork()">Generate "Short & Sharp" Proposal</button>
+                <div style="margin-bottom:20px;"><label>Job Post</label><textarea id="jobPost" rows="5" placeholder="Paste job description here..."></textarea></div>
+                <button class="btn-black" onclick="generateUpwork()">Generate Proposal</button>
                 <div id="resBox">
                     <div id="resTxt"></div>
-                    <div class="tool-btn" style="margin-top:15px;" onclick="copyResult()">📋 COPY PROPOSAL</div>
+                    <div class="tool-btn" style="margin-top:15px; color:var(--accent);" onclick="copyResult()">📋 COPY PROPOSAL</div>
                 </div>
             </div>
         </section>
@@ -148,10 +150,41 @@
             try {
                 const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
                 const d = await r.json();
-                ACTIVE_MODEL = d.models.find(m => m.supportedGenerationMethods.includes("generateContent")).name;
-            } catch (e) { console.error("API Error"); }
+                const model = d.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
+                ACTIVE_MODEL = model.name;
+                document.getElementById('connectionStatus').innerText = "🟢 SYSTEM ONLINE";
+            } catch (e) { document.getElementById('connectionStatus').innerText = "🔴 RECONNECTING..."; setTimeout(init, 3000); }
         }
         init();
+
+        async function callGemini(p, isChat) {
+            if(!ACTIVE_MODEL) await init();
+            const url = `https://generativelanguage.googleapis.com/v1beta/${ACTIVE_MODEL}:generateContent?key=${API_KEY}`;
+            const body = { contents: isChat ? [...history, {role:"user", parts:[{text:p}]}] : [{role:"user", parts:[{text:p}]}] };
+            
+            try {
+                const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+                const d = await r.json();
+                if(d.error) throw new Error(d.error.message);
+                const txt = d.candidates[0].content.parts[0].text;
+                if(isChat) {
+                    history.push({role:"user", parts:[{text:p}]}, {role:"model", parts:[{text:txt}]});
+                }
+                return txt;
+            } catch(e) { return "I encountered a connection hiccup. Please try your message again."; }
+        }
+
+        async function sendChat() {
+            const i = document.getElementById('userInput');
+            const m = i.value.trim();
+            if(!m) return;
+            addMsg(m, 'user');
+            i.value = '';
+            const id = "t-"+Date.now();
+            addMsg("AI is thinking...", 'ai', id);
+            const res = await callGemini(m, true);
+            document.getElementById(id).innerText = res;
+        }
 
         async function generateUpwork() {
             const u = document.getElementById('uName').value;
@@ -162,41 +195,16 @@
             const box = document.getElementById('resBox');
             const txt = document.getElementById('resTxt');
 
-            if(!j) return alert("Paste Job Post");
-            box.style.display = "block"; txt.innerText = "Drafting...";
+            if(!j) return alert("Please paste the job details.");
+            box.style.display = "block"; txt.innerText = "Drafting your Short & Sharp proposal...";
 
             const prompt = `Act as a $150/hr Freelance Consultant. Write a short, punchy Upwork proposal. 
-            Rules: Use "Problem-First" framework. No "I am/have". Max 150 words. Peer tone.
-            Framework: Hey ${c} Hook (Pain), Twist (Hidden Risk), Process (3 Bullets), Win (${w}), CTA (Specific Question), P.S (Free Value).
+            Rules: Use "Problem-First" framework. No "I am/have" or "Dear". Max 150 words. Peer tone.
+            Framework: Hey ${c}, Hook (Pain), Twist (Hidden Risk), Process (3 Bullets), Win (${w}), CTA (Specific Question), P.S (Free Value).
             Data: Name: ${u}, Niche: ${n}, Post: ${j}`;
 
             const result = await callGemini(prompt, false);
             txt.innerText = result;
-        }
-
-        async function callGemini(p, isChat) {
-            if(!ACTIVE_MODEL) await init();
-            const url = `https://generativelanguage.googleapis.com/v1beta/${ACTIVE_MODEL}:generateContent?key=${API_KEY}`;
-            const body = { contents: isChat ? [...history, {role:"user", parts:[{text:p}]}] : [{role:"user", parts:[{text:p}]}] };
-            try {
-                const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-                const d = await r.json();
-                const res = d.candidates[0].content.parts[0].text;
-                if(isChat) { history.push({role:"user", parts:[{text:p}]}, {role:"model", parts:[{text:res}]}); }
-                return res;
-            } catch(e) { return "Error."; }
-        }
-
-        async function sendChat() {
-            const i = document.getElementById('userInput');
-            if(!i.value.trim()) return;
-            const m = i.value;
-            addMsg(m, 'user');
-            i.value = '';
-            const id = "t-"+Date.now();
-            addMsg("Thinking...", 'ai', id);
-            const res = await callGemini(m, true);
-            document.getElementById(id).innerText = res;
         }
 
         function addMsg(t, s, id=null) {
@@ -206,10 +214,9 @@
             
             let tools = s === 'ai' ? `
                 <div class="toolbox">
-                    <span class="tool-btn" onclick="copyText(this)">Copy</span>
+                    <span class="tool-btn" onclick="copyMsg(this)">Copy</span>
                     <span class="tool-btn" onclick="this.innerText='👍'">Like</span>
-                    <span class="tool-btn" onclick="this.innerText='👎'">Dislike</span>
-                    <span class="tool-btn" onclick="alert('Link Copied!')">Share</span>
+                    <span class="tool-btn" onclick="alert('Shared!')">Share</span>
                 </div>` : '';
 
             cont.innerHTML = `<div class="msg ${s}" ${id ? `id="${id}"` : ''}>${t}</div>${tools}`;
@@ -217,16 +224,16 @@
             d.scrollTop = d.scrollHeight;
         }
 
-        function copyText(btn) {
-            const text = btn.parentElement.previousElementSibling.innerText;
-            navigator.clipboard.writeText(text);
-            btn.innerText = "COPIED!";
+        function copyMsg(btn) {
+            const txt = btn.parentElement.previousElementSibling.innerText;
+            navigator.clipboard.writeText(txt);
+            btn.innerText = "COPIED";
             setTimeout(() => btn.innerText = "COPY", 2000);
         }
 
         function copyResult() {
             navigator.clipboard.writeText(document.getElementById('resTxt').innerText);
-            alert("Proposal Copied to Clipboard!");
+            alert("Copied to clipboard!");
         }
     </script>
 </body>
