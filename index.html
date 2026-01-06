@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Consultant Hub</title>
+    <title>DefyBot AI | Premium Consultant</title>
     <link rel="icon" type="image/png" href="logo.png">
 
     <style>
@@ -23,7 +23,7 @@
         
         .logo-area { text-align: center; margin-bottom: 40px; width: 100%; }
         .logo-wrapper {
-            width: 170px; height: 170px; margin: 0 auto;
+            width: 180px; height: 180px; margin: 0 auto;
             background: white; border-radius: 32px;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border);
@@ -35,8 +35,9 @@
         .nav-btn { 
             background: transparent; color: #444746; border: none; padding: 14px 20px; 
             text-align: left; cursor: pointer; border-radius: 100px; font-weight: 500; 
-            transition: 0.3s; display: flex; align-items: center; gap: 12px;
+            transition: all 0.2s; display: flex; align-items: center; gap: 12px;
         }
+        .nav-btn:hover { background: #e1e5e9; }
         .nav-btn.active { background: #c2e7ff; color: #001d35; font-weight: 600; }
 
         /* --- MAIN AREA --- */
@@ -45,19 +46,26 @@
         .page.active { display: flex; flex-direction: column; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- CHAT UI --- */
+        #chatDisplay { flex: 1; padding: 0 10% 120px 10%; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+        .msg-container { display: flex; flex-direction: column; gap: 5px; max-width: 80%; }
+        .ai-cont { align-self: flex-start; }
+        .user-cont { align-self: flex-end; }
+        .msg { padding: 15px 20px; border-radius: 20px; font-size: 15px; line-height: 1.5; }
+        .ai { background: #f0f4f9; border-bottom-left-radius: 4px; }
+        .user { background: var(--deep); color: white; border-bottom-right-radius: 4px; }
+
         /* --- CONSULTANT CARD --- */
         .consultant-card { 
             background: white; padding: 40px; border-radius: 28px; border: 1px solid var(--border); 
-            max-width: 850px; margin: 0 auto; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            max-width: 850px; margin: 0 auto; 
         }
         .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         label { display: block; font-size: 11px; font-weight: 700; color: #5f6368; margin-bottom: 6px; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fff; transition: 0.2s; }
-        input:focus, textarea:focus { border-color: var(--accent); background: #fafcff; }
-        .submit-btn { background: var(--deep); color: white; border: none; padding: 16px; border-radius: 100px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
+        input, textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
+        .submit-btn { background: var(--deep); color: white; border: none; padding: 16px; border-radius: 100px; cursor: pointer; font-weight: 600; width: 100%; }
 
-        #resultArea { margin-top: 30px; padding: 25px; background: #f8fbff; border-radius: 16px; border: 1px solid #c2e7ff; display: none; white-space: pre-wrap; font-size: 15px; line-height: 1.6; position: relative; }
-        .copy-badge { position: absolute; top: 15px; right: 15px; font-size: 10px; font-weight: 800; color: var(--accent); cursor: pointer; text-transform: uppercase; }
+        #resultArea { margin-top: 30px; padding: 25px; background: #f8fbff; border-radius: 16px; border: 1px solid #c2e7ff; display: none; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -69,92 +77,52 @@
             </div>
             <h2>DEFYBOT</h2>
         </div>
-        <button class="nav-btn active" onclick="showPage('upworkPage', this)">✍️ Consultant Engine</button>
-        <div id="apiStatus" style="margin-top:auto; font-size:10px; text-align:center; color: #999; font-weight: bold;">SYSTEM: ACTIVE</div>
+        <button class="nav-btn active" onclick="showPage('homePage', this)">🏠 Dashboard</button>
+        <button class="nav-btn" onclick="showPage('chatPage', this)">💬 AI Assistant</button>
+        <button class="nav-btn" onclick="showPage('upworkPage', this)">✍️ Consultant Engine</button>
+        <div id="apiStatus" style="margin-top:auto; font-size:10px; text-align:center; color: #999;">STATUS: CONNECTING...</div>
     </nav>
 
     <main class="main">
-        <section id="upworkPage" class="page active">
+        <section id="homePage" class="page active">
+            <div style="text-align:center; margin-top: 100px;">
+                <h1>Welcome, Mujtaba.</h1>
+                <p>High-conversion consultant engine active.</p>
+            </div>
+        </section>
+
+        <section id="chatPage" class="page">
+            <div id="chatDisplay"><div class="msg ai">Ready for your instructions.</div></div>
+            <div style="position: absolute; bottom: 30px; width: 100%; padding: 0 10%;">
+                <input type="text" id="chatInput" style="width:100%; border-radius:100px; padding:18px;" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') triggerChat()">
+            </div>
+        </section>
+
+        <section id="upworkPage" class="page">
             <div class="consultant-card">
-                <h2 style="margin-bottom:20px; font-weight: 500;">Upwork Strategy Engine</h2>
-                
+                <h2>Consultant Engine</h2>
+                <div class="grid-layout" style="margin-top:20px;">
+                    <div><label>User</label><input type="text" id="userName" value="Mujtaba Muneer"></div>
+                    <div><label>Client</label><input type="text" id="clientName" placeholder="e.g. Sarah"></div>
+                </div>
                 <div class="grid-layout">
-                    <div><label>Your Name</label><input type="text" id="userName" value="Mujtaba Muneer"></div>
-                    <div><label>Client Name</label><input type="text" id="clientName" placeholder="e.g. Sarah"></div>
+                    <div><label>Niche</label><input type="text" id="niche" placeholder="Web Developer"></div>
+                    <div><label>Exposure/Win</label><input type="text" id="win" placeholder="Built a similar tracker last week"></div>
                 </div>
-                
-                <div class="grid-layout">
-                    <div><label>Your Expert Niche</label><input type="text" id="niche" placeholder="Full Stack / Backend Architect"></div>
-                    <div><label>Relevant Experience / Win</label><input type="text" id="win" placeholder="Stabilized a SaaS handling 50k+ daily transactions"></div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label>Job Description (Pain Points)</label>
-                    <textarea id="jobPost" rows="5" placeholder="Paste the job requirements here..."></textarea>
-                </div>
-
-                <button class="submit-btn" onclick="runUpworkEngine()">Generate High-Conversion Proposal</button>
-
+                <textarea id="jobPost" rows="5" placeholder="Paste job description here..."></textarea>
+                <button class="submit-btn" style="margin-top:20px;" onclick="runUpworkEngine()">Generate Proposal</button>
                 <div id="resultArea">
-                    <span class="copy-badge" onclick="copyProposal()">Click to Copy</span>
                     <div id="proposalContent"></div>
+                    <button style="margin-top:15px; cursor:pointer; color:var(--accent); border:none; background:none; font-weight:bold;" onclick="copyProposal()">📋 COPY</button>
                 </div>
             </div>
         </section>
     </main>
 
     <script>
+        // Replace this key with a fresh one if error persists
         const API_KEY = "AIzaSyCuOooBTkc1oCj6B3JJ0iDcOFqDi9o5HA8";
-        let MODEL_NAME = "gemini-1.5-flash";
-
-        async function fetchAI(promptText) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
-            const payload = { contents: [{ parts: [{ text: promptText }] }] };
-            try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
-            } catch (e) { return "Connection error. Please check your API key."; }
-        }
-
-        async function runUpworkEngine() {
-            const u = document.getElementById('userName').value;
-            const c = document.getElementById('clientName').value || "there";
-            const n = document.getElementById('niche').value;
-            const w = document.getElementById('win').value;
-            const j = document.getElementById('jobPost').value;
-            const resArea = document.getElementById('resultArea');
-            const resTxt = document.getElementById('proposalContent');
-
-            if(!j) return alert("Please paste the job details.");
-            resArea.style.display = "block";
-            resTxt.innerText = "Consultant Brain is formulating strategy...";
-
-            const finalPrompt = `
-            Act as a $150/hr High-Ticket Consultant. Write a proposal for ${u}. 
-            Job Context: ${j}. Client Name: ${c}. Niche: ${n}. Your Social Proof: ${w}.
-
-            STRICT STRUCTURE (DO NOT DEVIATE):
-            1. THE HOOK: The first two lines must call out the core technical pain (e.g., PostgreSQL bottlenecks, race conditions, async errors). Use keywords from the job.
-            2. THE EXPERIENCE: Briefly mention that you have solved this before. Explicitly use: "${w}".
-            3. THE HONESTY PIVOT: Use the phrase: "I cannot guarantee a definitive solution without a deep-dive architecture audit first." Differentiate between a "Quick Patch" and "Permanent Restructuring."
-            4. THE CTA: Ask for a "10-minute call" to review the architecture.
-            5. THE VALUE P.S.: Add a specific technical guess/tip (e.g., "P.S. If you're seeing database deadlocks, it's often due to unoptimized indexing on foreign keys...").
-
-            STYLE: Start with 'Hey ${c},'. Peer-to-peer tone. Max 150 words. No "I am/have" or "Dear".
-            `;
-
-            const result = await fetchAI(finalPrompt);
-            resTxt.innerText = result;
-        }
-
-        function copyProposal() {
-            const text = document.getElementById('proposalContent').innerText;
-            navigator.clipboard.writeText(text);
-            const badge = document.querySelector('.copy-badge');
-            badge.innerText = "COPIED!";
-            setTimeout(() => { badge.innerText = "CLICK TO COPY"; }, 2000);
-        }
+        let MODEL_NAME = "gemini-1.5-flash"; // More stable for free tier
 
         function showPage(id, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -162,6 +130,74 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
+
+        async function fetchAI(promptText) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+            const payload = { contents: [{ parts: [{ text: promptText }] }] };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    console.error("API Error:", data.error.message);
+                    return `Connection Error: ${data.error.message}. Try again in 60 seconds.`;
+                }
+                return data.candidates[0].content.parts[0].text;
+            } catch (e) {
+                return "Fatal Connection Error. Check your internet or API key.";
+            }
+        }
+
+        async function runUpworkEngine() {
+            const u = document.getElementById('userName').value;
+            const c = document.getElementById('clientName').value || "there";
+            const j = document.getElementById('jobPost').value;
+            const resArea = document.getElementById('resultArea');
+            const resTxt = document.getElementById('proposalContent');
+
+            if(!j) return alert("Please paste a job post.");
+            resArea.style.display = "block";
+            resTxt.innerText = "Consultant AI is thinking...";
+
+            const finalPrompt = `Act as a $150/hr Consultant. Write a proposal for ${u}. 
+            Job: ${j}. Client: ${c}. 
+            Rules: Start with 'Hey ${c}'. Hit the pain immediately. Say you can't guarantee a fix without an architecture review. Ask about documentation. Max 150 words. Peer tone.`;
+
+            const result = await fetchAI(finalPrompt);
+            resTxt.innerText = result;
+        }
+
+        async function triggerChat() {
+            const input = document.getElementById('chatInput');
+            if(!input.value.trim()) return;
+            const userMsg = input.value;
+            addMsg(userMsg, 'user');
+            input.value = '';
+            const aiMsg = await fetchAI(userMsg);
+            addMsg(aiMsg, 'ai');
+        }
+
+        function addMsg(t, s) {
+            const d = document.getElementById('chatDisplay');
+            const c = document.createElement('div');
+            c.className = `msg-container ${s}-cont`;
+            c.innerHTML = `<div class="msg ${s}">${t}</div>`;
+            d.appendChild(c);
+            d.scrollTop = d.scrollHeight;
+        }
+
+        function copyProposal() {
+            navigator.clipboard.writeText(document.getElementById('proposalContent').innerText);
+            alert("Copied!");
+        }
+
+        // Initialize status
+        document.getElementById('apiStatus').innerText = "STATUS: ONLINE";
     </script>
 </body>
 </html>
