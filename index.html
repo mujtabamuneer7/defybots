@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Workspace</title>
+    <title>DefyBot AI | Consultant Pro</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         :root { 
@@ -51,7 +51,6 @@
         .ai { background: var(--gemini-blue); border-bottom-left-radius: 4px; border: 1px solid #e1efff; }
         .user { background: var(--deep); color: white; border-bottom-right-radius: 4px; }
 
-        /* TOOLBOX (Copy, Share, Like) */
         .toolbox { display: flex; gap: 12px; padding: 5px 12px; opacity: 0; transition: 0.2s; }
         .msg-container:hover .toolbox { opacity: 1; }
         .tool-btn { font-size: 11px; cursor: pointer; color: #adb5bd; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -83,9 +82,9 @@
             <img src="logo.png" alt="DefyBot" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
             <h2>DEFYBOT</h2>
         </div>
-        <button class="nav-btn active" onclick="show('homePage', this)"><span>🏠</span> Home</button>
-        <button class="nav-btn" onclick="show('chatPage', this)"><span>💬</span> AI Assistant</button>
-        <button class="nav-btn" onclick="show('upworkPage', this)"><span>✍️</span> Writing Tools</button>
+        <button class="nav-btn active" onclick="show('homePage', this)">🏠 Home</button>
+        <button class="nav-btn" onclick="show('chatPage', this)">💬 AI Assistant</button>
+        <button class="nav-btn" onclick="show('upworkPage', this)">✍️ Writing Tools</button>
         <div id="connectionStatus" style="margin-top:auto; font-size:10px; text-align:center; color: #adb5bd; font-weight: bold;">LINKING...</div>
     </nav>
 
@@ -93,10 +92,10 @@
         <section id="homePage" class="page active">
             <div style="text-align:center; max-width:700px; margin: 10% auto;">
                 <h1 style="font-size: 42px; font-weight: 300; margin-bottom: 15px;">Welcome, Mujtaba.</h1>
-                <p style="color:#5f6368; font-size: 18px; margin-bottom: 40px;">Your classic, professional AI command center is ready.</p>
+                <p style="color:#5f6368; font-size: 18px; margin-bottom: 40px;">Your high-conversion Consultant Command Center is ready.</p>
                 <div style="display:flex; gap:20px; justify-content:center;">
-                    <div style="padding:25px; background:var(--gemini-blue); border-radius:20px; width:220px; border:1px solid #e1efff;"><b>High Performance</b></div>
-                    <div style="padding:25px; background:var(--gemini-blue); border-radius:20px; width:220px; border:1px solid #e1efff;"><b>Short & Sharp</b></div>
+                    <div style="padding:25px; background:var(--gemini-blue); border-radius:20px; width:220px;"><b>Consultant Mode</b></div>
+                    <div style="padding:25px; background:var(--gemini-blue); border-radius:20px; width:220px;"><b>Problem-First</b></div>
                 </div>
             </div>
         </section>
@@ -104,7 +103,7 @@
         <section id="chatPage" class="page">
             <div id="chatDisplay">
                 <div class="msg-container ai-cont">
-                    <div class="msg ai">I am connected and ready. How can I help you today?</div>
+                    <div class="msg ai">I am Mujtaba's personal consultant bot. How can I help you today?</div>
                 </div>
             </div>
             <div class="input-bar">
@@ -115,17 +114,17 @@
 
         <section id="upworkPage" class="page">
             <div class="card">
-                <h2 style="margin-bottom:20px;">Upwork Proposal Generator</h2>
+                <h2 style="margin-bottom:20px;">Upwork Genius (Consultant Engine)</h2>
                 <div class="grid-2">
                     <div><label>Your Name</label><input type="text" id="uName" placeholder="Mujtaba Muneer"></div>
-                    <div><label>Client Name</label><input type="text" id="cName" placeholder="e.g. John"></div>
+                    <div><label>Client Name</label><input type="text" id="cName" placeholder="e.g. John (or 'Client' if unknown)"></div>
                 </div>
                 <div class="grid-2">
-                    <div><label>Your Niche</label><input type="text" id="uNiche" placeholder="Web Developer"></div>
-                    <div><label>Relevant Win</label><input type="text" id="uWin" placeholder="Completed similar task in 24h"></div>
+                    <div><label>Your Niche</label><input type="text" id="uNiche" placeholder="Full Stack Developer"></div>
+                    <div><label>Specific Exposure/Win</label><input type="text" id="uWin" placeholder="Built a similar tracking system last month"></div>
                 </div>
-                <div style="margin-bottom:20px;"><label>Job Post</label><textarea id="jobPost" rows="5" placeholder="Paste job description here..."></textarea></div>
-                <button class="btn-black" onclick="generateUpwork()">Generate Proposal</button>
+                <div style="margin-bottom:20px;"><label>Job Post Description</label><textarea id="jobPost" rows="5" placeholder="Paste Upwork job requirements..."></textarea></div>
+                <button class="btn-black" onclick="generateUpwork()">Generate Consultant Proposal</button>
                 <div id="resBox">
                     <div id="resTxt"></div>
                     <div class="tool-btn" style="margin-top:15px; color:var(--accent);" onclick="copyResult()">📋 COPY PROPOSAL</div>
@@ -135,7 +134,7 @@
     </main>
 
     <script>
-        const API_KEY = "AIzaSyD0TUaXwj1lbBbCDtpqcxX0r7LtRZOsV2s";
+        const API_KEY = "AIzaSyDAl7mknM1IidGe6MtIW1ibTgB7wXHFIIE";
         let ACTIVE_MODEL = null;
         let history = [];
 
@@ -150,45 +149,15 @@
             try {
                 const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
                 const d = await r.json();
-                const model = d.models.find(m => m.supportedGenerationMethods.includes("generateContent"));
-                ACTIVE_MODEL = model.name;
-                document.getElementById('connectionStatus').innerText = "🟢 SYSTEM ONLINE";
-            } catch (e) { document.getElementById('connectionStatus').innerText = "🔴 RECONNECTING..."; setTimeout(init, 3000); }
+                ACTIVE_MODEL = d.models.find(m => m.supportedGenerationMethods.includes("generateContent")).name;
+                document.getElementById('connectionStatus').innerText = "🟢 SYSTEM READY";
+            } catch (e) { document.getElementById('connectionStatus').innerText = "🔴 ERROR"; setTimeout(init, 5000); }
         }
         init();
 
-        async function callGemini(p, isChat) {
-            if(!ACTIVE_MODEL) await init();
-            const url = `https://generativelanguage.googleapis.com/v1beta/${ACTIVE_MODEL}:generateContent?key=${API_KEY}`;
-            const body = { contents: isChat ? [...history, {role:"user", parts:[{text:p}]}] : [{role:"user", parts:[{text:p}]}] };
-            
-            try {
-                const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-                const d = await r.json();
-                if(d.error) throw new Error(d.error.message);
-                const txt = d.candidates[0].content.parts[0].text;
-                if(isChat) {
-                    history.push({role:"user", parts:[{text:p}]}, {role:"model", parts:[{text:txt}]});
-                }
-                return txt;
-            } catch(e) { return "I encountered a connection hiccup. Please try your message again."; }
-        }
-
-        async function sendChat() {
-            const i = document.getElementById('userInput');
-            const m = i.value.trim();
-            if(!m) return;
-            addMsg(m, 'user');
-            i.value = '';
-            const id = "t-"+Date.now();
-            addMsg("AI is thinking...", 'ai', id);
-            const res = await callGemini(m, true);
-            document.getElementById(id).innerText = res;
-        }
-
         async function generateUpwork() {
-            const u = document.getElementById('uName').value;
-            const c = document.getElementById('cName').value;
+            const u = document.getElementById('uName').value || "Mujtaba";
+            const c = document.getElementById('cName').value || "there";
             const n = document.getElementById('uNiche').value;
             const w = document.getElementById('uWin').value;
             const j = document.getElementById('jobPost').value;
@@ -196,44 +165,72 @@
             const txt = document.getElementById('resTxt');
 
             if(!j) return alert("Please paste the job details.");
-            box.style.display = "block"; txt.innerText = "Drafting your Short & Sharp proposal...";
+            box.style.display = "block"; txt.innerText = "Analyzing post as a Consultant...";
 
-            const prompt = `Act as a $150/hr Freelance Consultant. Write a short, punchy Upwork proposal. 
-            Rules: Use "Problem-First" framework. No "I am/have" or "Dear". Max 150 words. Peer tone.
-            Framework: Hey ${c}, Hook (Pain), Twist (Hidden Risk), Process (3 Bullets), Win (${w}), CTA (Specific Question), P.S (Free Value).
-            Data: Name: ${u}, Niche: ${n}, Post: ${j}`;
+            const prompt = `
+            Act as a $150/hr Freelance Consultant. You are writing a proposal for ${u} to ${c}.
+            
+            CORE STRATEGY:
+            1. FIRST TWO LINES: Hit the pain point from this job post: "${j}". Identify the risk or empathy immediately.
+            2. TONE: Peer-to-peer. Analyze if the poster is technical or an owner. Speak their language.
+            3. CONSULTANT RULE: If this is a bug fix/dev job, refuse to guarantee a fix without a 'Code Review'. Explain the difference between a 'Quick Patch' and 'Permanent Restructuring'.
+            4. EXPOSURE: Connect the niche "${n}" and win "${w}" to the job post. Explain the underlying tech similarity if not a direct match.
+            5. DOCUMENTATION: Ask if the previous developer left any documentation.
+            6. CTA: Ask for a quick call to review architecture.
+
+            STRICT FORMAT:
+            - Start with: "Hey ${c},"
+            - No "I am", "I have", or "Dear".
+            - Max 150 words.
+            - Follow the structure: Pain Hook -> Twist (The Honesty Pivot) -> 3-step Diagnostic Process -> CTA.
+            - P.S. One high-value technical tip.
+            `;
 
             const result = await callGemini(prompt, false);
             txt.innerText = result;
         }
 
-        function addMsg(t, s, id=null) {
+        async function callGemini(p, isChat) {
+            if(!ACTIVE_MODEL) await init();
+            const url = `https://generativelanguage.googleapis.com/v1beta/${ACTIVE_MODEL}:generateContent?key=${API_KEY}`;
+            const body = { contents: isChat ? [...history, {role:"user", parts:[{text:p}]}] : [{role:"user", parts:[{text:p}]}] };
+            try {
+                const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+                const d = await r.json();
+                const res = d.candidates[0].content.parts[0].text;
+                if(isChat) history.push({role:"user", parts:[{text:p}]}, {role:"model", parts:[{text:res}]});
+                return res;
+            } catch(e) { return "Hiccup. Try again."; }
+        }
+
+        async function sendChat() {
+            const i = document.getElementById('userInput');
+            if(!i.value.trim()) return;
+            addMsg(i.value, 'user');
+            const res = await callGemini(i.value, true);
+            i.value = '';
+            addMsg(res, 'ai');
+        }
+
+        function addMsg(t, s) {
             const d = document.getElementById('chatDisplay');
             const cont = document.createElement('div');
             cont.className = `msg-container ${s}-cont`;
-            
-            let tools = s === 'ai' ? `
-                <div class="toolbox">
-                    <span class="tool-btn" onclick="copyMsg(this)">Copy</span>
-                    <span class="tool-btn" onclick="this.innerText='👍'">Like</span>
-                    <span class="tool-btn" onclick="alert('Shared!')">Share</span>
-                </div>` : '';
-
-            cont.innerHTML = `<div class="msg ${s}" ${id ? `id="${id}"` : ''}>${t}</div>${tools}`;
+            let tools = s === 'ai' ? `<div class="toolbox"><span class="tool-btn" onclick="copyMsg(this)">Copy</span></div>` : '';
+            cont.innerHTML = `<div class="msg ${s}">${t}</div>${tools}`;
             d.appendChild(cont);
             d.scrollTop = d.scrollHeight;
         }
 
         function copyMsg(btn) {
-            const txt = btn.parentElement.previousElementSibling.innerText;
-            navigator.clipboard.writeText(txt);
+            navigator.clipboard.writeText(btn.parentElement.previousElementSibling.innerText);
             btn.innerText = "COPIED";
             setTimeout(() => btn.innerText = "COPY", 2000);
         }
 
         function copyResult() {
             navigator.clipboard.writeText(document.getElementById('resTxt').innerText);
-            alert("Copied to clipboard!");
+            alert("Copied!");
         }
     </script>
 </body>
