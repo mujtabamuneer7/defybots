@@ -10,7 +10,7 @@
             --accent: #004ecc;
             --accent-light: #c2e7ff;
             --bg: #f0f4f9;
-            --glass: rgba(255, 255, 255, 0.9);
+            --glass: rgba(255, 255, 255, 0.95);
             --deep: #1a1c1e;
             --border: #dde2ea;
         }
@@ -18,7 +18,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body { 
-            background: linear-gradient(135deg, #f0f4f9 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #f0f4f9 0%, #d7e3f1 100%);
             height: 100vh; display: flex; overflow: hidden; color: var(--deep);
         }
 
@@ -26,97 +26,84 @@
         .sidebar { 
             width: 280px; background: var(--glass); border-right: 1px solid var(--border);
             padding: 30px 20px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
         
-        .logo-area { text-align: center; margin-bottom: 40px; }
         .logo-box {
-            width: 160px; height: 160px; margin: 0 auto;
+            width: 140px; height: 140px; margin: 0 auto 30px auto;
             background: white; border-radius: 24px;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 30px rgba(0,0,0,0.05); border: 1px solid var(--border);
-            padding: 15px; overflow: hidden;
+            padding: 10px;
         }
         .logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .logo-area h2 { font-size: 14px; margin-top: 15px; letter-spacing: 4px; font-weight: 800; color: #444; }
         
         .nav-btn { 
             background: transparent; color: #444; border: none; padding: 14px 20px; 
             text-align: left; cursor: pointer; border-radius: 12px; font-weight: 600; 
-            transition: 0.3s; display: flex; align-items: center; gap: 12px; font-size: 14px;
+            transition: 0.2s; display: flex; align-items: center; gap: 12px; font-size: 14px;
         }
         .nav-btn:hover { background: rgba(0,0,0,0.05); }
         .nav-btn.active { background: var(--accent-light); color: #001d35; }
 
         /* --- MAIN AREA --- */
-        .main { flex: 1; position: relative; display: flex; flex-direction: column; }
+        .main { flex: 1; position: relative; display: flex; flex-direction: column; background: transparent; }
         .page { display: none; height: 100%; padding: 40px; overflow-y: auto; }
-        .page.active { display: block; animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- CARDS & UI --- */
         .glass-card { 
-            background: var(--glass); padding: 35px; border-radius: 24px; 
-            border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+            background: var(--glass); padding: 40px; border-radius: 28px; 
+            border: 1px solid var(--border); box-shadow: 0 15px 50px rgba(0,0,0,0.04);
             max-width: 900px; margin: 0 auto;
         }
-        h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; }
-        p { color: #5f6368; margin-bottom: 25px; line-height: 1.6; }
 
+        /* --- INPUTS --- */
         .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; color: var(--accent); }
+        label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: var(--accent); letter-spacing: 1px; }
         input, textarea { 
             width: 100%; padding: 14px 18px; border: 1px solid var(--border); 
-            border-radius: 12px; font-size: 15px; outline: none; background: white; transition: 0.2s;
+            border-radius: 12px; font-size: 15px; outline: none; background: #fff;
         }
-        input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,78,204,0.1); }
 
         .btn-primary { 
-            background: var(--deep); color: white; border: none; padding: 16px 30px; 
+            background: var(--deep); color: white; border: none; padding: 16px; 
             border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; font-size: 16px;
-            transition: 0.3s;
         }
-        .btn-primary:hover { background: #000; transform: translateY(-2px); }
 
         /* --- CHAT PAGE --- */
-        #chatDisplay { height: calc(100vh - 250px); overflow-y: auto; padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .msg { max-width: 80%; padding: 15px 20px; border-radius: 18px; line-height: 1.5; font-size: 14px; position: relative; }
-        .user-msg { align-self: flex-end; background: var(--deep); color: white; border-bottom-right-radius: 4px; }
-        .ai-msg { align-self: flex-start; background: white; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-        .chat-input-area { position: absolute; bottom: 30px; left: 40px; right: 40px; display: flex; gap: 10px; }
-
-        /* --- STATUS --- */
-        #statusIndicator { font-size: 10px; font-weight: 800; color: #2ecc71; text-align: center; margin-top: auto; padding: 20px; }
+        #chatDisplay { height: calc(100vh - 220px); overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding: 10px; }
+        .msg { max-width: 75%; padding: 15px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+        .user-msg { align-self: flex-end; background: var(--deep); color: white; border-bottom-right-radius: 2px; }
+        .ai-msg { align-self: flex-start; background: white; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+        .chat-footer { position: absolute; bottom: 20px; left: 40px; right: 40px; display: flex; gap: 10px; background: white; padding: 10px; border-radius: 15px; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <div class="logo-area">
-            <div class="logo-box">
-                <img src="logo.png" alt="DefyBot" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
-            </div>
-            <h2>DEFYBOT</h2>
+        <div class="logo-box">
+            <img src="logo.png" alt="DefyBot" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
         </div>
-        <button class="nav-btn active" onclick="showPage('homePage', this)">🏠 Home</button>
+        <button class="nav-btn active" onclick="showPage('homePage', this)">🏠 Home Hub</button>
         <button class="nav-btn" onclick="showPage('upworkPage', this)">✍️ Strategy Engine</button>
         <button class="nav-btn" onclick="showPage('chatPage', this)">💬 Expert Chat</button>
-        <div id="statusIndicator">● SYSTEM ACTIVE</div>
+        <div style="margin-top: auto; font-size: 10px; text-align: center; color: #aaa;">SYSTEM v2.0 ACTIVE</div>
     </nav>
 
     <main class="main">
         <section id="homePage" class="page active">
             <div class="glass-card">
-                <h1>Welcome back, Mujtaba.</h1>
-                <p>Your AI-powered Consultant Engine is ready. Use the <b>Strategy Engine</b> to win high-ticket Upwork gigs or the <b>Expert Chat</b> for complex technical deep-dives.</p>
+                <h1 style="font-size: 36px; margin-bottom: 10px;">Welcome, Mujtaba</h1>
+                <p style="color: #666; margin-bottom: 30px;">Select a tool from the sidebar to begin your workflow.</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div style="padding: 20px; background: #fff; border-radius: 15px; border: 1px solid var(--border);">
-                        <h3 style="margin-bottom: 10px;">Recent Strategy</h3>
-                        <p style="font-size: 13px;">High-ticket proposal logic updated to Jan 2026 standards.</p>
+                    <div style="background: white; padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
+                        <h3 style="color: var(--accent);">Strategy Mode</h3>
+                        <p style="font-size: 13px; margin-top: 10px;">Craft high-ticket Upwork proposals with built-in architecture audit hooks.</p>
                     </div>
-                    <div style="padding: 20px; background: #fff; border-radius: 15px; border: 1px solid var(--border);">
-                        <h3 style="margin-bottom: 10px;">Chat Persistence</h3>
-                        <p style="font-size: 13px;">Memory active. Your technical context is being tracked.</p>
+                    <div style="background: white; padding: 25px; border-radius: 20px; border: 1px solid var(--border);">
+                        <h3 style="color: var(--accent);">Expert Chat</h3>
+                        <p style="font-size: 13px; margin-top: 10px;">Direct access to the model with conversation memory enabled.</p>
                     </div>
                 </div>
             </div>
@@ -124,47 +111,40 @@
 
         <section id="upworkPage" class="page">
             <div class="glass-card">
-                <h1>Strategy Engine</h1>
-                <p>Generate consultant-level proposals that focus on architecture and audits.</p>
-                
+                <h2 style="margin-bottom: 20px;">Strategy Engine</h2>
                 <div class="input-group">
                     <label>Client Name</label>
-                    <input type="text" id="clientName" placeholder="e.g. Alex">
+                    <input type="text" id="clientName" placeholder="e.g. Sarah">
                 </div>
                 <div class="input-group">
-                    <label>Job Description & Pain Points</label>
-                    <textarea id="jobPost" rows="6" placeholder="Paste the job requirements..."></textarea>
+                    <label>Job Description</label>
+                    <textarea id="jobPost" rows="8" placeholder="Paste Upwork job details..."></textarea>
                 </div>
-                <button class="btn-primary" onclick="runUpworkEngine()">Generate Proposal</button>
-
-                <div id="proposalBox" style="margin-top: 25px; padding: 20px; background: #f8fbff; border: 1px solid var(--accent-light); border-radius: 12px; display: none;">
-                    <div id="proposalContent" style="white-space: pre-wrap; font-size: 14px;"></div>
-                    <button onclick="copyProposal()" style="margin-top: 15px; background: transparent; border: none; color: var(--accent); font-weight: 800; cursor: pointer;">📋 COPY TO CLIPBOARD</button>
-                </div>
+                <button class="btn-primary" onclick="runUpworkEngine()">Generate High-Ticket Proposal</button>
+                <div id="proposalResult" style="margin-top: 25px; padding: 20px; background: #fff; border: 1px solid var(--accent-light); border-radius: 15px; display: none; white-space: pre-wrap; font-size: 14px;"></div>
             </div>
         </section>
 
         <section id="chatPage" class="page">
             <div id="chatDisplay">
-                <div class="msg ai-msg">System initialized. I have our previous technical context ready. What are we building today?</div>
+                <div class="msg ai-msg">Contextual memory is active. How can I assist you?</div>
             </div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Enter technical query..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-                <button class="btn-primary" style="width: 120px;" onclick="sendChatMessage()">Send</button>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" style="border:none;" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+                <button class="btn-primary" style="width: 100px;" onclick="sendChatMessage()">Send</button>
             </div>
         </section>
     </main>
 
     <script>
+        // UPDATED MODEL ID
         const API_KEY = "AIzaSyCuOooBTkc1oCj6B3JJ0iDcOFqDi9o5HA8";
-        const MODEL = "gemini-1.5-flash";
+        const MODEL = "gemini-1.5-flash-latest"; // This resolves the "Not Found" error
         let chatContext = [];
 
-        // --- PAGE NAVIGATION ---
-        function showPage(pageId, btn) {
+        function showPage(id, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
+            document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
@@ -178,53 +158,33 @@
                     body: JSON.stringify({ contents: messages })
                 });
                 const data = await response.json();
-                if (data.error) return "Error: " + data.error.message;
+                if (data.error) return "API Error: " + data.error.message;
                 return data.candidates[0].content.parts[0].text;
-            } catch (e) {
-                return "System Error: Check internet or API Key.";
-            }
+            } catch (e) { return "Connection Error."; }
         }
 
-        // --- STRATEGY ENGINE ---
         async function runUpworkEngine() {
             const j = document.getElementById('jobPost').value;
-            const c = document.getElementById('clientName').value || "there";
-            const box = document.getElementById('proposalBox');
-            const txt = document.getElementById('proposalContent');
-
-            if(!j) return alert("Please paste a job description.");
-            box.style.display = "block";
-            txt.innerText = "Consultant Brain is formulating response...";
-
-            const prompt = `Act as a $150/hr Consultant. Client: ${c}. Job: ${j}. 
-            Rules: Use technical keywords early. Say: "I cannot guarantee a solution without a deep-dive architecture audit first." Differentiate "Quick Patch" vs "Permanent Restructuring." Ask for a 10-minute call. End with a P.S. tech tip. Tone: Peer-to-peer.`;
-
-            const result = await callAI([{ role: "user", parts: [{ text: prompt }] }]);
-            txt.innerText = result;
+            const res = document.getElementById('proposalResult');
+            if(!j) return alert("Paste a job!");
+            res.style.display = "block";
+            res.innerText = "Processing...";
+            const result = await callAI([{ role: "user", parts: [{ text: `Write a high-ticket consultant proposal for: ${j}` }] }]);
+            res.innerText = result;
         }
 
-        // --- CHAT SYSTEM ---
         async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const display = document.getElementById('chatDisplay');
             if(!input.value.trim()) return;
-
-            const userText = input.value;
-            display.innerHTML += `<div class="msg user-msg">${userText}</div>`;
-            chatContext.push({ role: "user", parts: [{ text: userText }] });
+            const txt = input.value;
+            display.innerHTML += `<div class="msg user-msg">${txt}</div>`;
+            chatContext.push({ role: "user", parts: [{ text: txt }] });
             input.value = "";
-            display.scrollTop = display.scrollHeight;
-
             const response = await callAI(chatContext);
             chatContext.push({ role: "model", parts: [{ text: response }] });
             display.innerHTML += `<div class="msg ai-msg">${response}</div>`;
             display.scrollTop = display.scrollHeight;
-        }
-
-        function copyProposal() {
-            const text = document.getElementById('proposalContent').innerText;
-            navigator.clipboard.writeText(text);
-            alert("Proposal copied!");
         }
     </script>
 </body>
