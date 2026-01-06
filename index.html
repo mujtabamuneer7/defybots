@@ -3,124 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upwork Proposal Strategy</title>
+    <title>DefyBot AI | Consultant Hub</title>
+    
+    <link rel="icon" type="image/png" href="logo.png">
+
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            background-color: #f4f7f6;
+        :root { 
+            --gemini-blue: #f8fbff; --accent: #004ecc; --deep: #111111; --border: #e2e8f0;
+            --sidebar-bg: #f0f4f9;
         }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        body { background: white; height: 100vh; display: flex; overflow: hidden; color: var(--deep); }
+
+        /* --- SIDEBAR --- */
+        .sidebar { 
+            width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border);
+            padding: 30px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
         }
-        h1 {
-            color: #14a800; /* Upwork Green */
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+        
+        .logo-area { 
+            text-align: center; margin-bottom: 40px; width: 100%;
         }
-        h2 {
-            color: #2c3e50;
-            margin-top: 30px;
-            font-size: 1.4em;
+        
+        /* The Huge Logo Container */
+        .logo-wrapper {
+            width: 180px; height: 180px; margin: 0 auto;
+            background: white; border-radius: 32px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
         }
-        .point-box {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-left: 4px solid #14a800;
-            background: #f9f9f9;
+        
+        .logo-wrapper img { 
+            width: 100%; height: 100%; object-fit: contain; padding: 15px;
         }
-        ul {
-            padding-left: 20px;
+        
+        .logo-area h2 { font-size: 14px; margin-top: 15px; letter-spacing: 5px; font-weight: 800; color: #444; }
+        
+        .nav-btn { 
+            background: transparent; color: #444746; border: none; padding: 14px 20px; 
+            text-align: left; cursor: pointer; border-radius: 100px; font-weight: 500; 
+            transition: all 0.2s; display: flex; align-items: center; gap: 12px;
         }
-        li {
-            margin-bottom: 10px;
+        .nav-btn:hover { background: #e1e5e9; }
+        .nav-btn.active { background: #c2e7ff; color: #001d35; font-weight: 600; }
+
+        /* --- MAIN AREA --- */
+        .main { flex: 1; position: relative; background: white; display: flex; flex-direction: column; overflow: hidden; }
+        .page { display: none; height: 100%; width: 100%; padding: 40px; overflow-y: auto; }
+        .page.active { display: flex; flex-direction: column; animation: slideUp 0.3s ease-out; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- CHAT UI --- */
+        #chatDisplay { flex: 1; padding: 0 10% 120px 10%; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+        .msg-container { display: flex; flex-direction: column; gap: 5px; max-width: 80%; }
+        .ai-cont { align-self: flex-start; }
+        .user-cont { align-self: flex-end; }
+        .msg { padding: 15px 20px; border-radius: 20px; font-size: 15px; line-height: 1.5; }
+        .ai { background: #f0f4f9; border-bottom-left-radius: 4px; }
+        .user { background: var(--deep); color: white; border-bottom-right-radius: 4px; }
+
+        /* --- UPWORK ENGINE UI --- */
+        .consultant-card { 
+            background: white; padding: 40px; border-radius: 28px; border: 1px solid var(--border); 
+            max-width: 850px; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.02);
         }
-        strong {
-            color: #000;
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: #5f6368; margin-bottom: 6px; }
+        input, textarea { 
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border); 
+            border-radius: 12px; font-size: 14px; outline: none; background: #fff;
         }
-        .cta-section {
-            margin-top: 40px;
-            padding: 20px;
-            background: #e8f5e9;
-            border-radius: 5px;
-            text-align: center;
+        input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,78,204,0.1); }
+        .submit-btn { 
+            background: var(--deep); color: white; border: none; padding: 16px; 
+            border-radius: 100px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px;
+            transition: transform 0.1s;
+        }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* --- ALERTS --- */
+        #contextAlert {
+            position: fixed; top: 20px; right: 20px; background: #d93025; color: white;
+            padding: 12px 24px; border-radius: 8px; display: none; z-index: 2000;
+            font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        #resultArea { 
+            margin-top: 30px; padding: 25px; background: #f8fbff; border-radius: 16px; 
+            border: 1px solid #c2e7ff; display: none; white-space: pre-wrap; font-size: 15px;
+            line-height: 1.6; color: #1f1f1f;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Upwork Proposal Strategy</h1>
-    <p>Based on expert video transcripts, here are the most practical points for winning projects:</p>
+    <div id="contextAlert">⚠️ Context Loss Risk: Stop distracting and submit now.</div>
 
-    <div class="point-box">
-        <h2>1. The Hook (The First Two Lines)</h2>
-        <ul>
-            <li><strong>Hit the Pain Point:</strong> Identify the client's problem immediately (e.g., a vanished developer or system bugs).</li>
-            <li><strong>Empathy:</strong> Acknowledge their situation without over-promising a "magic" instant fix.</li>
-        </ul>
-    </div>
+    <nav class="sidebar">
+        <div class="logo-area">
+            <div class="logo-wrapper">
+                <img src="logo.png" alt="DefyBot" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
+            </div>
+            <h2>DEFYBOT</h2>
+        </div>
+        
+        <button class="nav-btn active" onclick="showPage('homePage', this)">🏠 Dashboard</button>
+        <button class="nav-btn" onclick="showPage('chatPage', this)">💬 AI Assistant</button>
+        <button class="nav-btn" onclick="showPage('upworkPage', this)">✍️ Consultant Engine</button>
+        
+        <div id="apiStatus" style="margin-top:auto; font-size:10px; text-align:center; color: #999;">SYSTEM: VERIFYING...</div>
+    </nav>
 
-    <div class="point-box">
-        <h2>2. Identify Client Tone</h2>
-        <ul>
-            <li><strong>Persona:</strong> Adapt your tone if you are speaking to a CEO (results-oriented) or an Assistant (data-oriented).</li>
-            <li><strong>Technical Level:</strong> Use technical jargon only if the client has used it in the job post.</li>
-        </ul>
-    </div>
+    <main class="main">
+        <section id="homePage" class="page active">
+            <div style="text-align:center; margin-top: 100px;">
+                <h1 style="font-size: 48px; font-weight: 400; color: #1f1f1f;">Welcome back, Mujtaba.</h1>
+                <p style="color:#5f6368; font-size: 18px; margin-top: 10px;">Select a tool to begin your high-conversion workflow.</p>
+            </div>
+        </section>
 
-    <div class="point-box">
-        <h2>3. The 'Code Review' Condition</h2>
-        <ul>
-            <li><strong>Integrity:</strong> Be honest; state that you cannot guarantee a fix without seeing the code architecture first.</li>
-            <li><strong>Consult:</strong> Explain the difference between a temporary patch and a permanent fix.</li>
-        </ul>
-    </div>
+        <section id="chatPage" class="page">
+            <div id="chatDisplay">
+                <div class="msg-container ai-cont">
+                    <div class="msg ai">Hello Mujtaba. I'm ready to assist with research or technical tasks.</div>
+                </div>
+            </div>
+            <div style="position: absolute; bottom: 30px; width: 100%; padding: 0 10%;">
+                <input type="text" id="chatInput" style="width:100%; border-radius:100px; padding:18px 25px; border:1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.05);" placeholder="Type your message..." onkeypress="if(event.key==='Enter') triggerChat()">
+            </div>
+        </section>
 
-    <div class="point-box">
-        <h2>4. Relevant Portfolio</h2>
-        <ul>
-            <li><strong>Be Specific:</strong> Mention only the skills requested. Do not clutter with irrelevant experience.</li>
-            <li><strong>Parallel Logic:</strong> If you haven't done the exact project, show how a similar technology you used applies here.</li>
-        </ul>
-    </div>
+        <section id="upworkPage" class="page">
+            <div class="consultant-card">
+                <h2 style="margin-bottom: 25px; font-weight: 500;">Consultant Proposal Generator</h2>
+                <div class="grid-layout">
+                    <div><label>User Identity</label><input type="text" id="userName" placeholder="Mujtaba Muneer"></div>
+                    <div><label>Client Name</label><input type="text" id="clientName" placeholder="e.g. Sarah (or 'there')"></div>
+                </div>
+                <div class="grid-layout">
+                    <div><label>Consultant Niche</label><input type="text" id="niche" placeholder="Full Stack Developer"></div>
+                    <div><label>Relevant Win (Authority)</label><input type="text" id="win" placeholder="Built a similar API last month"></div>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label>Job Description</label>
+                    <textarea id="jobPost" rows="6" placeholder="Paste the job post here..." oninput="startFocusTimer()"></textarea>
+                </div>
+                <button class="submit-btn" onclick="runUpworkEngine()">Draft High-Conversion Proposal</button>
+                
+                <div id="resultArea">
+                    <div id="proposalContent"></div>
+                    <button style="margin-top:20px; background:none; border:none; color:var(--accent); font-weight:700; cursor:pointer;" onclick="copyProposal()">📋 COPY PROPOSAL</button>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <div class="point-box">
-        <h2>5. Consultant Mindset</h2>
-        <ul>
-            <li><strong>Documentation:</strong> Ask about previous documentation to show professional intent.</li>
-            <li><strong>Process:</strong> Briefly outline your diagnostic steps (Setup &rarr; Debug &rarr; Fix).</li>
-        </ul>
-    </div>
+    <script>
+        const API_KEY = "AIzaSyDAl7mknM1IidGe6MtIW1ibTgB7wXHFIIE";
+        let MODEL_NAME = null;
+        let chatHistory = [];
+        let focusTimer;
 
-    <div class="point-box">
-        <h2>6. Smart Bidding</h2>
-        <ul>
-            <li><strong>Timing:</strong> Apply within 5-10 minutes of the post while the client is likely still online.</li>
-            <li><strong>Boost:</strong> Use Connects to stay at the top for jobs that match your skills 100%.</li>
-        </ul>
-    </div>
+        // Context Retention Logic: Warn after 5 mins of starting a job post
+        function startFocusTimer() {
+            clearTimeout(focusTimer);
+            document.getElementById('contextAlert').style.display = 'none';
+            focusTimer = setTimeout(() => {
+                document.getElementById('contextAlert').style.display = 'block';
+            }, 300000); 
+        }
 
-    <div class="point-box">
-        <h2>7. Focus & Action</h2>
-        <ul>
-            <li><strong>Avoid Distractions:</strong> Maintain "Context Retention" by staying focused until the proposal is sent.</li>
-            <li><strong>Call to Action:</strong> End with a clear next step, like a quick discovery call.</li>
-        </ul>
-    </div>
+        function showPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
 
-    <div class="cta-section">
-        <strong>Ready to apply?</strong>
-        <p>Would you like me to draft a proposal for an active job post using these guidelines?</p>
-    </div>
-</div>
+        async function initSystem() {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+                const data = await res.json();
+                MODEL_NAME = data.models.find(m => m.supportedGenerationMethods.includes("generateContent")).name;
+                document.getElementById('apiStatus').innerText = "SYSTEM: READY";
+            } catch (e) { document.getElementById('apiStatus').innerText = "SYSTEM: OFFLINE"; }
+        }
+        initSystem();
 
+        async function runUpworkEngine() {
+            const u = document.getElementById('userName').value || "Mujtaba";
+            const c = document.getElementById('clientName').value || "there";
+            const n = document.getElementById('niche').value;
+            const w = document.getElementById('win').value;
+            const j = document.getElementById('jobPost').value;
+            const area = document.getElementById('resultArea');
+            const content = document.getElementById('proposalContent');
+
+            if(!j) return alert("Please input the job description.");
+            area.style.display = "block";
+            content.innerText = "Consultant Brain is analyzing the post...";
+
+            const prompt = `
+            You are a $150/hr Consultant writing a proposal for ${u}.
+            Client: ${c}. Niche: ${n}. Experience: ${w}. Job: ${j}.
+
+            PROPOSAL STRUCTURE:
+            1. HOOK: First 2 lines must call out the core pain (vanishing dev, bug, or risk).
+            2. THE TWIST: Mention that a guarantee is impossible without a code review/audit first.
+            3. EDUCATION: Explain the difference between a "Quick Patch" and "Architecture Restructuring."
+            4. DOCUMENTATION: Ask if the previous dev left any documentation.
+            5. CTA: Direct request to review the architecture on a call.
+
+            RULES: Max 150 words. Peer-to-peer tone. No "I am/have" or "Dear".
+            Start with: Hey ${c},`;
+
+            const result = await fetchAI(prompt, false);
+            content.innerText = result;
+            clearTimeout(focusTimer);
+            document.getElementById('contextAlert').style.display = 'none';
+        }
+
+        async function fetchAI(p, isChat) {
+            if(!MODEL_NAME) await initSystem();
+            const url = `https://generativelanguage.googleapis.com/v1beta/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+            const body = { contents: isChat ? [...chatHistory, {role:"user", parts:[{text:p}]}] : [{role:"user", parts:[{text:p}]}] };
+            try {
+                const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+                const d = await r.json();
+                const text = d.candidates[0].content.parts[0].text;
+                if(isChat) chatHistory.push({role:"user", parts:[{text:p}]}, {role:"model", parts:[{text:text}]});
+                return text;
+            } catch(e) { return "Connection Error. Please try again."; }
+        }
+
+        async function triggerChat() {
+            const input = document.getElementById('chatInput');
+            if(!input.value.trim()) return;
+            const msg = input.value;
+            addMessage(msg, 'user');
+            input.value = '';
+            const aiRes = await fetchAI(msg, true);
+            addMessage(aiRes, 'ai');
+        }
+
+        function addMessage(text, sender) {
+            const display = document.getElementById('chatDisplay');
+            const cont = document.createElement('div');
+            cont.className = `msg-container ${sender}-cont`;
+            cont.innerHTML = `<div class="msg ${sender}">${text}</div>`;
+            display.appendChild(cont);
+            display.scrollTop = display.scrollHeight;
+        }
+
+        function copyProposal() {
+            navigator.clipboard.writeText(document.getElementById('proposalContent').innerText);
+            alert("Consultant Proposal Copied.");
+        }
+    </script>
 </body>
 </html>
