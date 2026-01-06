@@ -3,201 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DefyBot AI | Premium Consultant</title>
+    <title>DefyBot AI | Consultant Hub</title>
     <link rel="icon" type="image/png" href="logo.png">
-
     <style>
-        :root { 
-            --gemini-blue: #f8fbff; --accent: #004ecc; --deep: #111111; --border: #e2e8f0;
-            --sidebar-bg: #f0f4f9;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        :root { --accent: #004ecc; --deep: #111111; --border: #e2e8f0; --sidebar-bg: #f0f4f9; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: white; height: 100vh; display: flex; overflow: hidden; color: var(--deep); }
-
-        /* --- SIDEBAR --- */
-        .sidebar { 
-            width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border);
-            padding: 30px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
-        }
-        
-        .logo-area { text-align: center; margin-bottom: 40px; width: 100%; }
-        .logo-wrapper {
-            width: 180px; height: 180px; margin: 0 auto;
-            background: white; border-radius: 32px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border);
-            overflow: hidden;
-        }
-        .logo-wrapper img { width: 100%; height: 100%; object-fit: contain; padding: 15px; }
-        .logo-area h2 { font-size: 14px; margin-top: 15px; letter-spacing: 5px; font-weight: 800; color: #444; }
-        
-        .nav-btn { 
-            background: transparent; color: #444746; border: none; padding: 14px 20px; 
-            text-align: left; cursor: pointer; border-radius: 100px; font-weight: 500; 
-            transition: all 0.2s; display: flex; align-items: center; gap: 12px;
-        }
-        .nav-btn:hover { background: #e1e5e9; }
+        .sidebar { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 30px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        .logo-wrapper { width: 180px; height: 180px; margin: 0 auto; background: white; border-radius: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); overflow: hidden; padding: 15px; }
+        .logo-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .nav-btn { background: transparent; color: #444746; border: none; padding: 14px 20px; text-align: left; cursor: pointer; border-radius: 100px; font-weight: 500; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
         .nav-btn.active { background: #c2e7ff; color: #001d35; font-weight: 600; }
-
-        /* --- MAIN AREA --- */
         .main { flex: 1; position: relative; background: white; display: flex; flex-direction: column; overflow: hidden; }
         .page { display: none; height: 100%; width: 100%; padding: 40px; overflow-y: auto; }
-        .page.active { display: flex; flex-direction: column; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- CHAT UI --- */
-        #chatDisplay { flex: 1; padding: 0 10% 120px 10%; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-        .msg-container { display: flex; flex-direction: column; gap: 5px; max-width: 80%; }
-        .ai-cont { align-self: flex-start; }
-        .user-cont { align-self: flex-end; }
-        .msg { padding: 15px 20px; border-radius: 20px; font-size: 15px; line-height: 1.5; }
-        .ai { background: #f0f4f9; border-bottom-left-radius: 4px; }
-        .user { background: var(--deep); color: white; border-bottom-right-radius: 4px; }
-
-        /* --- CONSULTANT CARD --- */
-        .consultant-card { 
-            background: white; padding: 40px; border-radius: 28px; border: 1px solid var(--border); 
-            max-width: 850px; margin: 0 auto; 
-        }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        label { display: block; font-size: 11px; font-weight: 700; color: #5f6368; margin-bottom: 6px; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fff; }
+        .page.active { display: flex; flex-direction: column; }
+        #chatDisplay { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 80px; }
+        .msg { max-width: 85%; padding: 12px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+        .user-msg { align-self: flex-end; background: var(--deep); color: white; border-bottom-right-radius: 2px; }
+        .ai-msg { align-self: flex-start; background: #f0f4f9; border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+        .chat-input-container { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px; background: white; }
         .submit-btn { background: var(--deep); color: white; border: none; padding: 16px; border-radius: 100px; cursor: pointer; font-weight: 600; width: 100%; }
-
-        #resultArea { margin-top: 30px; padding: 25px; background: #f8fbff; border-radius: 16px; border: 1px solid #c2e7ff; display: none; white-space: pre-wrap; font-size: 15px; line-height: 1.6; }
+        input, textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px; outline: none; }
+        #debugInfo { font-size: 10px; color: #666; margin-top: 5px; text-align: center; font-family: monospace; }
+        .typing { font-style: italic; color: #999; font-size: 12px; margin-left: 20px; display: none; }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <div class="logo-area">
-            <div class="logo-wrapper">
-                <img src="logo.png" alt="DefyBot" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"> 
-            </div>
-            <h2>DEFYBOT</h2>
+        <div class="logo-area" style="text-align:center; margin-bottom:30px;">
+            <div class="logo-wrapper"><img src="logo.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4712/4712035.png'"></div>
+            <h2 style="font-size:12px; letter-spacing:3px; margin-top:10px;">DEFYBOT</h2>
         </div>
-        <button class="nav-btn active" onclick="showPage('homePage', this)">🏠 Dashboard</button>
-        <button class="nav-btn" onclick="showPage('chatPage', this)">💬 AI Assistant</button>
-        <button class="nav-btn" onclick="showPage('upworkPage', this)">✍️ Consultant Engine</button>
-        <div id="apiStatus" style="margin-top:auto; font-size:10px; text-align:center; color: #999;">STATUS: CONNECTING...</div>
+        <button class="nav-btn active" onclick="showPage('upworkPage', this)">✍️ Strategy Engine</button>
+        <button class="nav-btn" onclick="showPage('chatPage', this)">💬 Expert Chat</button>
+        <div id="debugInfo">SYSTEM READY</div>
     </nav>
 
     <main class="main">
-        <section id="homePage" class="page active">
-            <div style="text-align:center; margin-top: 100px;">
-                <h1>Welcome, Mujtaba.</h1>
-                <p>High-conversion consultant engine active.</p>
+        <section id="upworkPage" class="page active">
+            <div style="max-width:800px; margin:0 auto;">
+                <h2 style="margin-bottom:20px;">Strategy Engine</h2>
+                <input type="text" id="clientName" placeholder="Client Name" style="margin-bottom:15px;">
+                <textarea id="jobPost" rows="8" placeholder="Paste Upwork Job Post Here..." style="margin-bottom:15px;"></textarea>
+                <button class="submit-btn" onclick="runUpworkEngine()">Generate High-Ticket Proposal</button>
+                <div id="proposalResult" style="margin-top:20px; padding:20px; background:#f8fbff; border:1px solid #c2e7ff; border-radius:15px; display:none; white-space:pre-wrap;"></div>
             </div>
         </section>
 
         <section id="chatPage" class="page">
-            <div id="chatDisplay"><div class="msg ai">Ready for your instructions.</div></div>
-            <div style="position: absolute; bottom: 30px; width: 100%; padding: 0 10%;">
-                <input type="text" id="chatInput" style="width:100%; border-radius:100px; padding:18px;" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') triggerChat()">
-            </div>
-        </section>
-
-        <section id="upworkPage" class="page">
-            <div class="consultant-card">
-                <h2>Consultant Engine</h2>
-                <div class="grid-layout" style="margin-top:20px;">
-                    <div><label>User</label><input type="text" id="userName" value="Mujtaba Muneer"></div>
-                    <div><label>Client</label><input type="text" id="clientName" placeholder="e.g. Sarah"></div>
-                </div>
-                <div class="grid-layout">
-                    <div><label>Niche</label><input type="text" id="niche" placeholder="Web Developer"></div>
-                    <div><label>Exposure/Win</label><input type="text" id="win" placeholder="Built a similar tracker last week"></div>
-                </div>
-                <textarea id="jobPost" rows="5" placeholder="Paste job description here..."></textarea>
-                <button class="submit-btn" style="margin-top:20px;" onclick="runUpworkEngine()">Generate Proposal</button>
-                <div id="resultArea">
-                    <div id="proposalContent"></div>
-                    <button style="margin-top:15px; cursor:pointer; color:var(--accent); border:none; background:none; font-weight:bold;" onclick="copyProposal()">📋 COPY</button>
-                </div>
+            <div id="chatDisplay"><div class="msg ai-msg">DefyBot Online. How can I help with your project today?</div></div>
+            <div id="typingIndicator" class="typing">AI is thinking...</div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Send a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+                <button class="submit-btn" style="width:120px;" onclick="sendChatMessage()">Send</button>
             </div>
         </section>
     </main>
 
-    <script>
-        // Replace this key with a fresh one if error persists
-        const API_KEY = "AIzaSyB4UoFQOj5Yg-2NFY_log9jRTHMlb_2bs4";
-        let MODEL_NAME = "gemini-1.5-flash"; // More stable for free tier
+    <script>// NEW KEY TEST
+const API_KEY = "AIzaSyAhXuQg8GSKXY2tlUpKu_vL9IkXObPhZiA"; 
+const MODEL = "gemini-1.5-flash"; // Try changing to "gemini-pro" if flash fails
 
-        function showPage(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+async function callAI(messages) {
+    const debug = document.getElementById('debugInfo');
+    debug.innerText = "CONNECTING...";
+    
+    // API URL
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+    
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: messages })
+        });
+
+        const data = await response.json();
+
+        // THIS WILL SHOW YOU THE EXACT PROBLEM
+        if (data.error) {
+            console.error("FULL ERROR:", data.error);
+            debug.innerText = "ERROR: " + data.error.message;
+            return "❌ API Error: " + data.error.message + " (Check Console for details)";
         }
 
-        async function fetchAI(promptText) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
-            const payload = { contents: [{ parts: [{ text: promptText }] }] };
+        debug.innerText = "ONLINE";
+        return data.candidates[0].content.parts[0].text;
 
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-                if (data.error) {
-                    console.error("API Error:", data.error.message);
-                    return `Connection Error: ${data.error.message}. Try again in 60 seconds.`;
-                }
-                return data.candidates[0].content.parts[0].text;
-            } catch (e) {
-                return "Fatal Connection Error. Check your internet or API key.";
-            }
-        }
-
-        async function runUpworkEngine() {
-            const u = document.getElementById('userName').value;
-            const c = document.getElementById('clientName').value || "there";
-            const j = document.getElementById('jobPost').value;
-            const resArea = document.getElementById('resultArea');
-            const resTxt = document.getElementById('proposalContent');
-
-            if(!j) return alert("Please paste a job post.");
-            resArea.style.display = "block";
-            resTxt.innerText = "Consultant AI is thinking...";
-
-            const finalPrompt = `Act as a $150/hr Consultant. Write a proposal for ${u}. 
-            Job: ${j}. Client: ${c}. 
-            Rules: Start with 'Hey ${c}'. Hit the pain immediately. Say you can't guarantee a fix without an architecture review. Ask about documentation. Max 150 words. Peer tone.`;
-
-            const result = await fetchAI(finalPrompt);
-            resTxt.innerText = result;
-        }
-
-        async function triggerChat() {
-            const input = document.getElementById('chatInput');
-            if(!input.value.trim()) return;
-            const userMsg = input.value;
-            addMsg(userMsg, 'user');
-            input.value = '';
-            const aiMsg = await fetchAI(userMsg);
-            addMsg(aiMsg, 'ai');
-        }
-
-        function addMsg(t, s) {
-            const d = document.getElementById('chatDisplay');
-            const c = document.createElement('div');
-            c.className = `msg-container ${s}-cont`;
-            c.innerHTML = `<div class="msg ${s}">${t}</div>`;
-            d.appendChild(c);
-            d.scrollTop = d.scrollHeight;
-        }
-
-        function copyProposal() {
-            navigator.clipboard.writeText(document.getElementById('proposalContent').innerText);
-            alert("Copied!");
-        }
-
-        // Initialize status
-        document.getElementById('apiStatus').innerText = "STATUS: ONLINE";
+    } catch (e) {
+        debug.innerText = "NETWORK FAILED";
+        return "❌ Connection Failed. Are you online?";
+    }
+}
     </script>
 </body>
 </html>
