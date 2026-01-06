@@ -143,26 +143,35 @@
             }
         }
 
-        async function runUpworkEngine() {
-            const j = document.getElementById('jobPost').value;
-            const c = document.getElementById('clientName').value || "there";
-            const wrapper = document.getElementById('resultWrapper');
-            const res = document.getElementById('proposalResult');
+       async function runUpworkEngine() {
+    const j = document.getElementById('jobPost').value;
+    const c = document.getElementById('clientName').value || "there";
+    const wrapper = document.getElementById('resultWrapper');
+    const res = document.getElementById('proposalResult');
 
-            if(!j) return alert("Please paste a job description.");
-            wrapper.style.display = "block";
-            res.innerText = "Applying Honest-Pivot Strategy...";
+    if(!j) return alert("Please paste a job description.");
+    wrapper.style.display = "block";
+    res.innerText = "Drafting your elite cover letter...";
 
-            const prompt = `Act as an Elite Technical Consultant. Write a proposal for ${c} based on this job: ${j}. 
-            Follow this framework:
-            1. Technical Hook.
-            2. The Pivot: "I cannot guarantee a final timeline until we audit the current architecture."
-            3. Value: Focus on stability over speed.
-            4. CTA: 10 min call. 
-            Tone: High authority, brief, professional. No flowery AI language.`;
+    // This prompt is fine-tuned for high-ticket Upwork conversion
+    const prompt = `Act as a $150/hr Expert Technical Consultant.
+    Job Description: ${j}
+    Client Name: ${c}
 
-            const result = await callLlama([{ role: "user", content: prompt }]);
-            res.innerText = result;
+    Write a professional Cover Letter for Upwork. 
+    Follow these strict rules:
+    1. Start with: "Hi ${c},"
+    2. Immediately state a high-level technical challenge you see in their job post (the "Technical Hook").
+    3. Use the "Honesty Pivot": State clearly that a definitive timeline is impossible without an architecture audit.
+    4. Contrast "Quick Fixes" vs "Long-term Infrastructure."
+    5. Ending: Suggest a 10-minute discovery call.
+    6. Tone: Minimalist, sophisticated, and authoritative. 
+    7. NO generic AI fluff (e.g., "I am excited," "I am the perfect fit," "I have 5 years experience").
+    8. Format: Ready to copy-paste as a single message.`;
+
+    const result = await callLlama([{ role: "user", content: prompt }]);
+    res.innerText = result;
+}
         }
 
         async function sendChatMessage() {
